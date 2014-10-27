@@ -49,7 +49,7 @@ $config = require(__DIR__ . '/../config/web.php');
 
 [[yii\base\Application::id|id]] プロパティは、アプリケーションを他のアプリケーションから区別するユニークな ID を規定します。
 このプロパティは主としてプログラム的に使われます。
-これは必須条件ではありませんが、最良の相互運用性を確保するために、アプリケーション ID を規定するときに英数字だけを使うことが推奨されます。
+必須ではありませんが、最良の相互運用性を確保するために、アプリケーション ID を規定するときに英数字だけを使うことが推奨されます。
 
 
 #### [[yii\base\Application::basePath|basePath]] <a name="basePath"></a>
@@ -141,18 +141,15 @@ $config = require(__DIR__ . '/../config/web.php');
 ]
 ```
 
+ブートストラップの過程で、各コンポーネントのインスタンスが作成されます。
+そして、コンポーネントクラスが [[yii\base\BootstrapInterface]] を実装している場合は、その [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] メソッドも呼び出されます。
 
-During the bootstrapping process, each component will be instantiated. If the component class
-implements [[yii\base\BootstrapInterface]], its [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] method
-will also be called.
-
-Another practical example is in the application configuration for the [Basic Application Template](start-installation.md),
-where the `debug` and `gii` modules are configured as bootstrapping components when the application is running
-in development environment,
+もう一つの実用的な例が [ベーシックアプリケーションテンプレート](start-installation.md) のアプリケーション設定の中にあります。
+そこでは、アプリケーションが開発環境で走るときには `debug` モジュールと `gii` モジュールがブートストラップコンポーネントとして構成されています。
 
 ```php
 if (YII_ENV_DEV) {
-    // configuration adjustments for 'dev' environment
+    // 'dev' 環境のための設定の調整
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = 'yii\debug\Module';
 
@@ -161,18 +158,20 @@ if (YII_ENV_DEV) {
 }
 ```
 
-> Note: Putting too many components in `bootstrap` will degrade the performance of your application because
-  for each request, the same set of components need to be run. So use bootstrapping components judiciously.
+> Note|注意: あまり多くのコンポーネントを `bootstrap` に置くと、アプリケーションのパフォーマンスを劣化させます。
+  なぜなら、リクエストごとに同じ一連のコンポーネントを走らせなければならないからです。
+  ですから、ブートストラップコンポーネントは賢く使ってください。
 
 
 #### [[yii\web\Application::catchAll|catchAll]] <a name="catchAll"></a>
 
-This property is supported by [[yii\web\Application|Web applications]] only. It specifies
-a [controller action](structure-controllers.md) which should handle all user requests. This is mainly
-used when the application is in maintenance mode and needs to handle all incoming requests via a single action.
+このプロパティは [[yii\web\Application|ウェブアプリケーション]] においてのみサポートされます。
+これは、全てのユーザリクエストを処理すべき [コントローラアクション](structure-controllers.md) を規定します。
+これは主としてアプリケーションがメンテナンスモードにあって、入ってくる全てのリクエストを単一のアクションで処理する必要があるときに使われます。
 
-The configuration is an array whose first element specifies the route of the action.
-The rest of the array elements (key-value pairs) specify the parameters to be bound to the action. For example,
+構成は配列の形を取り、最初の要素はアクションのルートを指定します。
+そして、配列の残りの要素 (キー・値のペア) は、アクションに渡されるパラメータを指定します。
+例えば、
 
 ```php
 [
