@@ -1,27 +1,27 @@
-Properties
+プロパティ
 ==========
 
-In PHP, class member variables are also called *properties*. These variables are part of the class definition, and are used
-to represent the state of a class instance (i.e., to differentiate one instance of the class from another). In practice, you may often want to handle the reading or writing of properties in special ways. For example, you may want to always trim a string when it is being assigned
-to a `label` property. You *could* use the following code to achieve this task:
+PHPでは、クラスのメンバ変数は *プロパティ* とも呼ばれます。これらの変数は、クラス定義の一部で、クラスのインスタンスの状態を表すために
+(すなわち、クラスのあるインスタンスを別のものと区別するために) 使用されます。現実によく、特別な方法でこのプロパティの読み書きを扱いたい
+場合があります。たとえば、`label` プロパティに割り当てられる文字列が常にトリミングされるようにしたい、など。その仕事を成し遂げるために、
+あなたは次のようなコードを使ってきたのではありませんか:
 
 ```php
 $object->label = trim($label);
 ```
 
-The drawback of the above code is that you would have to call `trim()` everywhere in your code where you might set the `label`
-property. If, in the future, the `label` property gets a new requirement, such as the first letter must be capitalized, you would again have to modify every bit of code that assigns a value to `label`. The repetition of code leads to bugs, and is a practice you want to avoid as much as possible.
+上記のコードの欠点は、 `label` プロパティを設定するすべてのコードで、`trim()` を呼び出す必要があるということです。もし将来的に、
+`label` プロパティに、最初の文字を大文字にしなければならない、といった新たな要件が発生したら、 `label` に値を代入するすべてのコードを変更しなければなりません。コー​​ドの繰り返しはバグを誘発するので、できれば避けたいところです。
 
-To solve this problem, Yii introduces a base class called [[yii\base\Object]] that supports defining properties
-based on *getter* and *setter* class methods. If a class needs that functionality, it should extend from
-[[yii\base\Object]], or from a child class.
+この問題を解決するために、Yii は *getter* メソッドと *setter* メソッドをベースにしたプロパティ定義をサポートする、 [[yii\base\Object]] 基底クラスを提供します。
+クラスがその機能を必要とするなら、 [[yii\base\Object]] またはその子クラスを継承しましょう。
 
-> Info: Nearly every core class in the Yii framework extends from [[yii\base\Object]] or a child class.
-  This means that whenever you see a getter or setter in a core class, you can use it like a property.
+> 補足: Yiiのフレームワークのほぼすべてのコアクラスは、 [[yii\base\Object]] またはその子クラスを継承しています。
+  これは、コアクラスに getter または setter があれば、それをプロパティのように使用できることを意味します。
 
-A getter method is a method whose name starts with the word `get`; a setter method starts with `set`.
-The name after the `get` or `set` prefix defines the name of a property. For example, a getter `getLabel()` and/or
-a setter `setLabel()` defines a property named `label`, as shown in the following code:
+getter メソッドは、名前が `get` で始まるメソッドで、setter メソッドは、`set` で始まるメソッドです。
+`get` または `set` プレフィクスの後の名前で、プロパティ名を定義します。次のコードに示すように、たとえば、`getlabel()` という getter と `setLabel()` という setter は、
+`label` という名前のプロパティを定義します:
 
 ```php
 namespace app\components;
@@ -43,35 +43,35 @@ class Foo extends Object
     }
 }
 ```
+(詳しく言うと、getter および setter メソッドは、この場合には、内部的に `_label` と名付けられた private 属性を参照する `label` プロパティを作っています。)
 
-(To be clear, the getter and setter methods create the property `label`, which in this case internally refers to a private attribute named `_label`.)
-
-Properties defined by getters and setters can be used like class member variables. The main difference is that
-when such property is being read, the corresponding getter method will be called;  when the property is
-being assigned a value, the corresponding setter method will be called. For example:
+getter と setter によって定義されたプロパティは、クラスのメンバ変数のように使用することができます。主な違いは、
+それらのプロパティが読み取りアクセスされるときは、対応する getter ソッドが呼び出されることであり、プロパティに値が割り当てられるときには、
+対応する setter メソッドが呼び出されるということです。例:
 
 ```php
-// equivalent to $label = $object->getLabel();
+// $label = $object->getLabel(); と同じ
 $label = $object->label;
 
-// equivalent to $object->setLabel('abc');
+// $object->setLabel('abc'); と同じ
 $object->label = 'abc';
 ```
 
-A property defined by a getter without a setter is *read only*. Trying to assign a value to such property will cause
-an [[yii\base\InvalidCallException|InvalidCallException]]. Similarly, a property defined by a setter without a getter
-is *write only*, and trying to read such property will also cause an exception. It is not common to have write-only
-properties.
+setter なしの getter で定義されたプロパティは、 *読み取り専用* です。そのようなプロパティに値を代入しようとすると、
+[[yii\base\InvalidCallException|InvalidCallException]] が発生します。同様に、getter なしの setter で定義されたプロパティは、
+*書き込み専用* で、そのようなプロパティを読み取りしようとしても、例外が発生します。書き込み専用のプロパティを持つのは一般的ではありませんが。
 
-There are several special rules for, and limitations on, the properties defined via getters and setters:
+getter と ​​setter で定義されたプロパティには、いくつかの特別なルールと制限があります:
 
-* The names of such properties are *case-insensitive*. For example, `$object->label` and `$object->Label` are the same.
-  This is because method names in PHP are case-insensitive.
-* If the name of such property is the same as a class member variable, the latter will take precedence.
-  For example, if the above `Foo` class has a member variable `label`, then the assignment `$object->label = 'abc'`
-  will affect the *member variable* 'label'; that line would not call the  `setLabel()` setter method.
-* These properties do not support visibility. It makes no difference for the visibility of a property
-  if the defining getter or setter method is public, protected or private.
-* The properties can only be defined by *non-static* getters and/or setters. Static methods will not be treated in the same manner.
+* この種のプロパティでは、名前の *大文字と小文字を区別しません* 。たとえば、 `$object->label` と `$object->Label` は同じです。
+  これは、PHPのメソッド名が大文字と小文字を区別しないためです。
+* この種のプロパティの名前と、クラスのメンバ変数の名前とが同じである場合、後者が優先されます。
+  たとえば、上記の `Foo` クラスがもしメンバ変数 `label` を持っているとすると、`$object->label = 'abc'`
+  という代入は *メンバ変数の* `label` に作用することになり、その行で `setLabel()` setter メソッドは呼び出されなくなります。
+* これらのプロパティは可視性をサポートしていません。getter または setter メソッドの定義が、public、protected、private のどれであろうと、
+  プロパティの可視性にとっては何の違いもありません。
+* プロパティは、 *静的でない* getter および setter でしか定義できません。静的メソッドは同じようには扱われません。
 
-Returning back to the problem described at the beginning of this guide, instead of calling `trim()` everywhere a `label` value is assigned, `trim()` now only needs to be invoked within the setter `setLabel()`. And if a new requirement comes that requires the label to be initially capitalized, the `setLabel()` method can quickly be modified without touching any other code. The one change will universally affect every assignment to `label`.
+このガイドの冒頭で説明した問題に戻ると、 `label` に値が代入されているあらゆる箇所で `trim()` を呼ぶのではなく、もう `setLabel()` という setter の内部だけで `trim()` を呼べば済むのです。
+さらに、ラベルの先頭を大文字にするという新しい要求が来ても、他のいっさいのコードに触れることなく、すぐに `setLabel()` メソッドを変更することができます。一箇所の変更は、すべての `label` への代入に普遍的に作用します。
+
