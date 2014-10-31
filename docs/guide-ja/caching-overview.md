@@ -1,19 +1,13 @@
-Caching
+キャッシュ
 =======
 
-Caching is a cheap and effective way to improve the performance of a Web application. By storing relatively
-static data in cache and serving it from cache when requested, the application saves the time that would be
-required to generate the data from scratch every time.
+ウェブアプリケーションのパフォーマンスを向上させるための簡単で効果的な方法としてキャッシュというものがあります。比較的静的なデータをキャッシュに格納し、必要に応じてキャッシュからそれらを取得することによって、アプリケーションは一からデータを生成するのに必要な時間を節約することができます。
 
-Caching can occur at different levels and places in a Web application. On the server side, at the lower level,
-cache may be used to store basic data, such as a list of most recent article information fetched from database;
-and at the higher level, cache may be used to store fragments or whole of Web pages, such as the rendering result
-of the most recent articles. On the client side, HTTP caching may be used to keep most recently visited page content in
-the browser cache.
+キャッシュはさまざまなレベルのものを、アプリケーション内のさまざまな場所で利用することができます。例えばサーバサイドでの低いレベルでは、データベースから取得した最新の記事情報リストのような基本的なデータを格納するために利用したり、高いレベルでは、レンダリング結果の一部分、最新の記事であったり、またウェブページ全体を格納するためなどにも利用できます。クライアントサイドでは、ブラウザのキャッシュに最近訪れたことのあるページの内容をキャッシュに格納するために HTTP キャッシュを利用することもできます。
 
-Yii supports all these caching mechanisms:
+Yii では以下のリストに挙げられているキャッシュ機構をサポートしています:
 
-* [Data caching](caching-data.md)
-* [Fragment caching](caching-fragment.md)
-* [Page caching](caching-page.md)
-* [HTTP caching](caching-http.md)
+* [データキャッシュ](caching-data.md)
+* [フラグメントキャッシュ](caching-fragment.md)
+* [ページキャッシュ](caching-page.md)
+* [HTTP キャッシュ](caching-http.md)
