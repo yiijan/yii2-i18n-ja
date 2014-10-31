@@ -1,74 +1,73 @@
-Events
+イベント
 ======
 
-Events allow you to inject custom code into existing code at certain execution points. You can attach custom
-code to an event so that when the event is triggered, the code gets executed automatically. For example,
-a mailer object may trigger a `messageSent` event when it successfully sends a message. If you want to keep
-track of the messages that are successfully sent, you could then simply attach the tracking code to the `messageSent` event.
+イベントは、既存のコードの特定の実行ポイントに、カスタムコードを挿入することができます。イベントにカスタムコードを添付すると、
+イベントがトリガされたときにコードが自動的に実行されます。たとえば、メーラーオブジェクトがメッセージを正しく送信できたとき、
+`messageSent` イベントをトリガするとします。もしメッセージの送信がうまく行ったことを知りたければ、単に `messageSent`
+イベントにトラッキングコードを付与すするだけで、それが可能になります。
 
-Yii introduces a base class called [[yii\base\Component]] to support events. If a class needs to trigger
-events, it should extend from [[yii\base\Component]], or from a child class.
+Yiiはイベントをサポートするために、 [[yii\base\Component]] と呼ばれる基底クラスを導入してします。クラスがイベントをトリガする必要がある場合は、
+[[yii\base\Component]] もしくはその子クラスを継承する必要があります。
 
 
-Event Handlers <a name="event-handlers"></a>
+イベントハンドラ <a name="event-handlers"></a>
 --------------
 
-An event handler is a [PHP callback](http://www.php.net/manual/en/language.types.callable.php) that gets executed
-when the event it is attached to is triggered. You can use any of the following callbacks:
+イベントハンドラとは、関連するイベントがトリガされたときに実行される、 [PHPコールバック](http://www.php.net/manual/en/language.types.callable.php)
+です。次のコールバックのいずれも使用可能です:
 
-- a global PHP function specified as a string (without parentheses), e.g., `'trim'`;
-- an object method specified as an array of an object and a method name as a string (without parenthess), e.g., `[$object, 'methodName']`;
-- a static class method specified as an array of a class name and a method name as a string (without parentheses), e.g., `[$class, 'methodName']`;
-- an anonymous function, e.g., `function ($event) { ... }`.
+- 文字列で指定されたグローバルPHP関数 (括弧を除く) `'trim'` など
+- オブジェクトとメソッド名文字列の配列で指定された、オブジェクトのメソッド (括弧を除く) `[$object, 'methodName']` など
+- クラス名文字列とメソッド名文字列の配列で指定された、静的なクラスメソッド `[$class, 'methodName']` など
+- 無名関数 `function ($event) { ... }` など
 
-The signature of an event handler is:
+イベントハンドラのシグネチャはこのようになります:
 
 ```php
 function ($event) {
-    // $event is an object of yii\base\Event or a child class
+    // $event は yii\base\Event またはその子クラスのオブジェクト
 }
 ```
 
-Through the `$event` parameter, an event handler may get the following information about the event that occurred:
+`$event` パラメータを介して、イベントハンドラは発生したイベントに関して次の情報を得ることができます:
 
-- [[yii\base\Event::name|event name]]
-- [[yii\base\Event::sender|event sender]]: the object whose `trigger()` method was called
-- [[yii\base\Event::data|custom data]]: the data that is provided when attaching the event handler (to be explained next)
+- [[yii\base\Event::name|イベント名]]
+- [[yii\base\Event::sender|イベント送信元]]: `trigger()` メソッドを呼び出したオブジェクト
+- [[yii\base\Event::data|カスタムデータ]]: イベントハンドラを接続するときに提供されたデータ (後述)
 
 
-Attaching Event Handlers <a name="attaching-event-handlers"></a>
+イベントハンドラの付与 <a name="attaching-event-handlers"></a>
 ------------------------
 
-You can attach a handler to an event by calling the [[yii\base\Component::on()]] method. For example:
+イベントハンドラは [[yii\base\Component::on()]] を呼び出すことで付与できます。たとえば:
 
 ```php
 $foo = new Foo;
 
-// this handler is a global function
+// このハンドラはグローバル関数です
 $foo->on(Foo::EVENT_HELLO, 'function_name');
 
-// this handler is an object method
+// このハンドラはオブジェクトのメソッドです
 $foo->on(Foo::EVENT_HELLO, [$object, 'methodName']);
 
-// this handler is a static class method
+// このハンドラは静的なクラスメソッドです
 $foo->on(Foo::EVENT_HELLO, ['app\components\Bar', 'methodName']);
 
-// this handler is an anonymous function
+// このハンドラは無名関数です
 $foo->on(Foo::EVENT_HELLO, function ($event) {
-    // event handling logic
+    // イベント処理ロジック
 });
 ```
 
-You may also attach event handlers through [configurations](concept-configurations.md). For more details, please
-refer to the [Configurations](concept-configurations.md#configuration-format) section.
+また、 [コンフィギュレーション](concept-configurations.md) を通じてイベントハンドラを添付することもできます。詳細については
+[コンフィギュレーション](concept-configurations.md) の章を参照してください。
 
-
-When attaching an event handler, you may provide additional data as the third parameter to [[yii\base\Component::on()]].
-The data will be made available to the handler when the event is triggered and the handler is called. For example:
+イベントハンドラを付与するとき、 [[yii\base\Component::on()]] の3番目ののパラメータとして、付加的なデータを提供することができます。
+そのデータは、イベントがトリガされてハンドラが呼び出されるときに、ハンドラ内で利用きます。たとえば:
 
 ```php
-// The following code will display "abc" when the event is triggered
-// because $event->data contains the data passed as the 3rd argument to "on"
+// 次のコードはイベントがトリガされたとき "abc" を表示します
+// "on" に3番目の引数として渡されたデータを $event->data が保持しているからです
 $foo->on(Foo::EVENT_HELLO, 'function_name', 'abc');
 
 function function_name($event) {
@@ -76,12 +75,12 @@ function function_name($event) {
 }
 ```
 
-Event Handler Order
+イベントハンドラの順序
 -------------------
 
-You may attach one or more handlers to a single event. When an event is triggered, the attached handlers
-will be called in the order that they were attached to the event. If a handler needs to stop the invocation of the
-handlers that follow it, it may set the [[yii\base\Event::handled]] property of the `$event` parameter to be true:
+ひとつのイベントには、ひとつだけでなく複数のハンドラを付与することができます。イベントがトリガされると、付与されたハンドラは、
+それらがイベントに付与された順序どおりに呼び出されます。あるハンドラがその後に続くハンドラの呼び出しを停止する必要がある場合は、
+`$event` パラメータの [[yii\base\Event::handled]] プロパティを true に設定します:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
@@ -89,9 +88,9 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 });
 ```
 
-By default, a newly attached handler is appended to the existing handler queue for the event.
-As a result, the handler will be called in the last place when the event is triggered.
-To insert the new handler at the start of the handler queue so that the handler gets called first, you may call [[yii\base\Component::on()]], passing false for the fourth parameter `$append`:
+デフォルトでは、新たに接続されたハンドラは、イベントの既存のハンドラのキューに追加されます。その結果、
+イベントがトリガされたとき、そのハンドラは一番最後に呼び出されます。もし、そのハンドラが最初に呼び出されるよう、
+ハンドラのキューの先頭に新しいハンドラを挿入したい場合は、[[yii\base\Component::on()]] を呼び出とき、4番目のパラメータ `$append` に false を渡します:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
@@ -99,11 +98,11 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 }, $data, false);
 ```
 
-Triggering Events <a name="triggering-events"></a>
+イベントのトリガー <a name="triggering-events"></a>
 -----------------
 
-Events are triggered by calling the [[yii\base\Component::trigger()]] method. The method requires an *event name*,
-and optionally an event object that describes the parameters to be passed to the event handlers. For example:
+イベントは、 [[yii\base\Component::trigger()]] メソッドを呼び出すことでトリガされます。このメソッドには **イベント名** が必須で、
+オプションで、イベントハンドラに渡されるパラメータを記述したイベントオブジェクトを渡すこともできます。たとえば:
 
 ```php
 namespace app\components;
@@ -122,17 +121,16 @@ class Foo extends Component
 }
 ```
 
-With the above code, any calls to `bar()` will trigger an event named `hello`.
+上記のコードでは、すべての `bar()` の呼び出しは、 `hello` という名前のイベントをトリガします。
 
-> Tip: It is recommended to use class constants to represent event names. In the above example, the constant
-  `EVENT_HELLO` represents the `hello` event. This approach has three benefits. First, it prevents typos. Second, it can make events recognizable for IDE
-  auto-completion support. Third, you can tell what events are supported in a class by simply checking its constant declarations.
+> Tip: イベント名を表すときはクラス定数を使用することをお勧めします。上記の例では、定数 `EVENT_HELLO` は
+  `hello` イベントを表しています。このアプローチには3つの利点があります。まず、タイプミスを防ぐことができます。次に、IDEの自動補完サポートでイベントを
+  認識できるようになります。第3に、クラスでどんなイベントがサポートされているかを表したいとき、定数の宣言をチェックするだけで済みます。
 
-Sometimes when triggering an event you may want to pass along additional information to the event handlers.
-For example, a mailer may want pass the message information to the handlers of the `messageSent` event so that the handlers
-can know the particulars of the sent messages. To do so, you can provide an event object as the second parameter to
-the [[yii\base\Component::trigger()]] method. The event object must be an instance of the [[yii\base\Event]] class,
-or of a child class. For example:
+イベントをトリガするとき、イベントハンドラに追加情報を渡したいことがあります。たとえば、メーラーが `messageSent` イベントのハンドラに
+メッセージ情報を渡して、ハンドラが送信されたメッセージの詳細を知ることができるようにしたいかもしれません。
+これを行うために、 [[yii\base\Component::trigger()]] メソッドの2番目のパラメータとして、イベントオブジェクトを与えることができます。
+イベントオブジェクトは [[yii\base\Event]] クラスあるいはその子クラスのインスタンスでなければなりません。たとえば:
 
 ```php
 namespace app\components;
@@ -151,7 +149,7 @@ class Mailer extends Component
 
     public function send($message)
     {
-        // ...sending $message...
+        // ... $message 送信 ...
 
         $event = new MessageEvent;
         $event->message = $message;
@@ -160,51 +158,50 @@ class Mailer extends Component
 }
 ```
 
-When the [[yii\base\Component::trigger()]] method is called, it will call all handlers attached to
-the named event.
+[[yii\base\Component::trigger()]] メソッドが呼び出されたとき、この名前を付けられたイベントに
+付与されたハンドラがすべて呼び出されます。
 
 
-Detaching Event Handlers <a name="detaching-event-handlers"></a>
+イベントハンドラの取り外し <a name="detaching-event-handlers"></a>
 ------------------------
 
-To detach a handler from an event, call the [[yii\base\Component::off()]] method. For example:
+イベントからハンドラを取り外すには、 [[yii\base\Component::off()]] メソッドを呼び出します。たとえば:
 
 ```php
-// the handler is a global function
+// このハンドラはグローバル関数です
 $foo->off(Foo::EVENT_HELLO, 'function_name');
 
-// the handler is an object method
+// このハンドラはオブジェクトのメソッドです
 $foo->off(Foo::EVENT_HELLO, [$object, 'methodName']);
 
-// the handler is a static class method
+// このハンドラは静的なクラスメソッドです
 $foo->off(Foo::EVENT_HELLO, ['app\components\Bar', 'methodName']);
 
-// the handler is an anonymous function
+// このハンドラは無名関数です
 $foo->off(Foo::EVENT_HELLO, $anonymousFunction);
 ```
 
-Note that in general you should not try to detach an anonymous function unless you store it
-somewhere when it is attached to the event. In the above example, it is assumed that the anonymous
-function is stored as a variable `$anonymousFunction`.
+一般的には、イベントにアタッチされたときどこかに保存してある場合を除き、無名関数を取り外そうとはしないでください。
+上記の例は、無名関数は変数 `$anonymousFunction` として保存されていたものとしています。
 
-To detach ALL handlers from an event, simply call [[yii\base\Component::off()]] without the second parameter:
+イベントからすべてのハンドラを取り外すには、単純に、第2パラメータを指定せずに [[yii\base\Component::off()]] を呼び出します。
 
 ```php
 $foo->off(Foo::EVENT_HELLO);
 ```
 
 
-Class-Level Event Handlers <a name="class-level-event-handlers"></a>
+クラスレベル・イベントハンドラ <a name="class-level-event-handlers"></a>
 --------------------------
 
-The above subsections described how to attach a handler to an event on an *instance level*.
-Sometimes, you may want to respond to an event triggered by *every* instance of a class instead of only by
-a specific instance. Instead of attaching an event handler to every instance, you may attach the handler
-on the *class level* by calling the static method [[yii\base\Event::on()]].
+ここまでの項では、 *インスタンスレベル* でのイベントにハンドラを付与する方法を説明してきました。
+場合によっては、特定のインスタンスだけではなく、クラスのすべてのインスタンスがトリガした
+イベントに応答したいことがあります。すべてのインスタンスにイベントハンドラを付与する代わりに、静的メソッド
+[[yii\base\Event::on()]] を呼び出すことで、 *クラスレベル* でハンドラを付与することができます。
 
-For example, an [Active Record](db-active-record.md) object will trigger an [[yii\db\BaseActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]]
-event whenever it inserts a new record into the database. In order to track insertions done by *every*
-[Active Record](db-active-record.md) object, you may use the following code:
+たとえば、[アクティブレコード](db-active-record.md) オブジェクトは、データベースに新しいレコードを挿入するたびに、
+[[yii\db\BaseActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] イベントをトリガします。 *すべての*
+[アクティブレコード](db-active-record.md) オブジェクトによって行われる挿入を追跡するには、次のコードが使えます：
 
 ```php
 use Yii;
@@ -212,54 +209,54 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
-    Yii::trace(get_class($event->sender) . ' is inserted');
+    Yii::trace(get_class($event->sender) . ' が挿入されました');
 });
 ```
 
-The event handler will be invoked whenever an instance of [[yii\db\ActiveRecord|ActiveRecord]], or one of its child classes, triggers
-the [[yii\db\BaseActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] event. In the handler, you can get the object
-that triggered the event through `$event->sender`.
+[[yii\db\ActiveRecord|ActiveRecord]] またはその子クラスのいずれかが、 [[yii\db\BaseActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]]
+をトリガーするといつでも、このイベントハンドラが呼び出されます。ハンドラの中では、 `$event->sender` を通して、
+イベントをトリガしたオブジェクトを取得することができます。
 
-When an object triggers an event, it will first call instance-level handlers, followed by the class-level handlers.
+オブジェクトがイベントをトリガするときは、最初にインスタンスレベルのハンドラを呼び出し、続いてクラスレベルのハンドラとなります。
 
-You may trigger a *class-level* event by calling the static method [[yii\base\Event::trigger()]]. A class-level
-event is not associated with a particular object. As a result, it will cause the invocation of class-level event
-handlers only. For example:
+静的メソッド [[yii\base\Event::trigger()]] を呼び出すことによって、 *クラスレベル* でイベントをトリガすることができます。
+クラスレベルでのイベントは、特定のオブジェクトに関連付けられていません。そのため、これはクラスレベルのイベントハンドラだけを
+呼び出します。たとえば:
 
 ```php
 use yii\base\Event;
 
 Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
-    echo $event->sender;  // displays "app\models\Foo"
+    echo $event->sender;  // "app\models\Foo" を表示
 });
 
 Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 ```
 
-Note that, in this case, `$event->sender` refers to the name of the class triggering the event instead of an object instance.
+この場合、`$event->sender` は、オブジェクトインスタンスではなく、イベントをトリガーするクラスの名前を指すことに注意してください。
 
-> Note: Because a class-level handler will respond to an event triggered by any instance of that class, or any child
-  classes, you should use it carefully, especially if the class is a low-level base class, such as [[yii\base\Object]].
+> 注: クラスレベルのハンドラは、そのクラスのあらゆるインスタンス、またはあらゆる子クラスのインスタンスがトリガしたイベントに応答
+  してしまうため、よく注意して使わなければなりません。 [[yii\base\Object]] のように、クラスが低レベルの基底クラスの場合は特にそうです。
 
-To detach a class-level event handler, call [[yii\base\Event::off()]]. For example:
+クラスレベルのイベントハンドラを取り外すときは、 [[yii\base\Event::off()]] を呼び出します。たとえば:
 
 ```php
-// detach $handler
+// $handler を取り外し
 Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
 
-// detach all handlers of Foo::EVENT_HELLO
+// Foo::EVENT_HELLO のすべてのハンドラを取り外し
 Event::off(Foo::className(), Foo::EVENT_HELLO);
 ```
 
 
-Global Events <a name="global-events"></a>
+グローバル・イベント <a name="global-events"></a>
 -------------
 
-Yii supports a so-called *global event*, which is actually a trick based on the event mechanism described above.
-The global event requires a globally accessible Singleton, such as the [application](structure-applications.md) instance itself.
+Yiiは、実際に上記のイベントメカニズムに基づいたトリックである、いわゆる *グローバル・イベント* をサポートしています。
+グローバル・イベントは、 [アプリケーション](structure-applications.md) インスタンス自身などの、グローバルにアクセス可能なシングルトンを必要とします。
 
-To create the global event, an event sender calls the Singleton's `trigger()` method
-to trigger the event, instead of calling the sender's own `trigger()` method. Similarly, the event handlers are attached to the event on the Singleton. For example:
+グローバルイベントを作成するには、イベント送信者は、送信者の自前の `trigger()` メソッドを呼び出す代わりに、シングルトンの
+`trigger()` メソッドを呼び出してイベントをトリガします。同じく、イベントハンドラも、シングルトンのイベントに付与されます。たとえば:
 
 ```php
 use Yii;
@@ -267,15 +264,16 @@ use yii\base\Event;
 use app\components\Foo;
 
 Yii::$app->on('bar', function ($event) {
-    echo get_class($event->sender);  // displays "app\components\Foo"
+    echo get_class($event->sender);  // "app\components\Foo" を表示
 });
 
 Yii::$app->trigger('bar', new Event(['sender' => new Foo]));
 ```
 
-A benefit of using global events is that you do not need an object when attaching a handler to the event
-which will be triggered by the object. Instead, the handler attachment and the event triggering are both
-done through the Singleton (e.g. the application instance).
+グローバルイベントを使用する利点は、オブジェクトによってトリガされるイベントハンドラを設けたいとき、オブジェクトがなくてもいい
+ということです。その代わりに、ハンドラの付与とイベントのトリガはともに、(アプリケーションのインスタンスなど)シングルトンを
+介して行われます。
 
-However, because the namespace of the global events is shared by all parties, you should name the global events
-wisely, such as introducing some sort of namespace (e.g. "frontend.mail.sent", "backend.mail.sent").
+しかし、グローバルイベントの名前空間はあらゆる部分から共有されているので、名前空間の整理 ("frontend.mail.sent"、"backend.mail.sent" など)
+を導入するというような、賢いグローバルイベントの名前を付けをする必要があります。
+
