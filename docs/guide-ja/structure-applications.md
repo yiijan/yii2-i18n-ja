@@ -426,7 +426,7 @@ be kept as is for most applications unless you are working with some legacy syst
 
 #### [[yii\base\Application::layout|layout]] <a name="layout"></a>
 
-このプロパティは、[ビュー](structure-views.md) を描画するときに使われるべきデフォルトのレイアウトを規定します。
+このプロパティは、[ビュー](structure-views.md) をレンダリングするときに使われるべきデフォルトのレイアウトを規定します。
 デフォルト値は `'main'` であり、[レイアウトパス](#layoutPath) の下にある `main.php` というファイルが使われるべき事を意味します。
 [レイアウトパス](#layoutPath) と [ビューパス](#viewPath) の両方がデフォルト値を取る場合、
 デフォルトのレイアウトファイルは `@app/views/layouts/main.php` というパスエイリアスとして表すことが出来ます。
