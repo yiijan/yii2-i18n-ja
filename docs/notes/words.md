@@ -17,12 +17,14 @@
 | configure | 構成する | 設定する | N3 | [Configの訳語 #4](https://github.com/yiijan/yii2-i18n-ja/issues/4) |
 | current | 現在の | カレント～ | N1 | どっちでも良いかな |
 | default | デフォルト | 既定、既定の～ | N1 | どっちでも良いかな |
+| dispatch | 送付する | 送出する、ディスパッチする | N1 | |
 | massive assignment | 一括代入 | ? | N1 | |
 | populate | 投入する | 代入する、割り当てる、入れる | N2 | |
 | postfix | 接尾辞 | ポストフィックス | N1 | どっちでも良いかな |
 | prefix | 接頭辞 | プレフィックス | N1 | どっちでも良いかな |
 | render | レンダリングする | 表示する、描画する | N1 | |
 | rendering | レンダリング | | | |
+| resolve | 解決する | | N1 | で良いのかな |
 | validate | 検証する | | N1 | validator との整合性が気になるが |
 | validation | 検証 | バリデーション | N1 | validator との整合性が気になる |
 | validator | バリデータ | ? | N1 | カタカナ以外に訳語を思いつかない |
