@@ -1,38 +1,32 @@
-Data Caching
+データキャッシュ
 ============
 
-Data caching is about storing some PHP variable in cache and retrieving it later from cache.
-It is also the foundation for more advanced caching features, such as [query caching](#query-caching)
-and [page caching](caching-page.md).
+データキャッシュは PHP の変数をキャッシュに格納し、あとでキャッシュからそれらを読み込みます。
+[クエリキャッシュ](#query-caching) や [ページキャッシュ](caching-page.md) などのより高度なキャッシュ機能の基礎でもあります。
 
-The following code is a typical usage pattern of data caching, where `$cache` refers to
-a [cache component](#cache-components):
+以下はデータキャッシュの典型的な利用パターンを示したコードです。`$cache` は [キャッシュコンポーネント](#cache-components) を指します:
 
 ```php
-// try retrieving $data from cache
+// キャッシュを取得しようとして
 $data = $cache->get($key);
 
 if ($data === false) {
 
-    // $data is not found in cache, calculate it from scratch
+    // キャッシュが見つからない場合は一から作る
 
-    // store $data in cache so that it can be retrieved next time
+    // 次回はキャッシュから値を取得できるように $data に格納する
     $cache->set($key, $data);
 }
 
-// $data is available here
+// $data はここで利用できる
 ```
 
 
-## Cache Components <a name="cache-components"></a>
+## キャッシュコンポーネント <a name="cache-components"></a>
 
-Data caching relies on the so-called *cache components* which represent various cache storage,
-such as memory, files, databases.
+データキャッシュはメモリ、ファイル、データベースなどさまざまなキャッシュストレージを表す、いわゆるキャッシュコンポーネントに依存しています。
 
-Cache components are usually registered as [application components](structure-application-components.md) so
-that they can be globally configurable
-and accessible. The following code shows how to configure the `cache` application component to use
-[memcached](http://memcached.org/) with two cache servers:
+キャッシュコンポーネントは通常グローバルに設定しアクセスできるように [アプリケーションコンポーネント](structure-application-components.md) として登録されています。以下のコードは [Memcached](http://memcached.org/) を使い 2 つのキャッシュサーバを用いて、`cache` コンポーネントをどのように設定するかを示したものです:
 
 ```php
 'components' => [
@@ -54,11 +48,9 @@ and accessible. The following code shows how to configure the `cache` applicatio
 ],
 ```
 
-You can then access the above cache component using the expression `Yii::$app->cache`.
+上記のキャッシュコンポーネントには `Yii::$app->cache` でアクセスできます。
 
-Because all cache components support the same set of APIs, you can swap the underlying cache component
-with a different one by reconfiguring it in the application configuration without modifying the code that uses the cache.
-For example, you can modify the above configuration to use [[yii\caching\ApcCache|APC cache]]:
+すべてのキャッシュコンポーネントは同じ API がセットされているので、アプリケーションのコンフィグレーション側で設定しなおせば、キャッシュを使っているコードに変更を加えなくても、異なるキャッシュコンポーネントに入れ替えることができます。例えば上記の設定を [[yii\caching\ApcCache|APC キャッシュ]] に変更する場合は以下のようにします:
 
 
 ```php
@@ -69,253 +61,193 @@ For example, you can modify the above configuration to use [[yii\caching\ApcCach
 ],
 ```
 
-> Tip: You can register multiple cache application components. The component named `cache` is used
-  by default by many cache-dependent classes (e.g. [[yii\web\UrlManager]]).
+> ヒント: キャッシュコンポーネントは複数登録することができます。`cache` という名前のコンポーネントはキャッシュに依存したクラスによってデフォルトで使用されています (例えば [[yii\web\UrlManager]] など) 。
 
 
-### Supported Cache Storage <a name="supported-cache-storage"></a>
+### サポートされているキャッシュストレージ <a name="supported-cache-storage"></a>
 
-Yii supports a wide range of cache storage. The following is a summary:
+Yii はさまざまなキャッシュストレージをサポートしています。以下は概要です:
 
-* [[yii\caching\ApcCache]]: uses PHP [APC](http://php.net/manual/en/book.apc.php) extension. This option can be
-  considered as the fastest one when dealing with cache for a centralized thick application (e.g. one
-  server, no dedicated load balancers, etc.).
-* [[yii\caching\DbCache]]: uses a database table to store cached data. To use this cache, you must
-  create a table as specified in [[yii\caching\DbCache::cacheTable]].
-* [[yii\caching\DummyCache]]: serves as a cache placeholder which does no real caching.
-  The purpose of this component is to simplify the code that needs to check the availability of cache.
-  For example, during development or if the server doesn't have actual cache support, you may configure
-  a cache component to use this cache. When an actual cache support is enabled, you can switch to use
-  the corresponding cache component. In both cases, you may use the same code
-  `Yii::$app->cache->get($key)` to attempt retrieving data from the cache without worrying that
-  `Yii::$app->cache` might be `null`.
-* [[yii\caching\FileCache]]: uses standard files to store cached data. This is particular suitable
-  to cache large chunk of data, such as page content.
-* [[yii\caching\MemCache]]: uses PHP [memcache](http://php.net/manual/en/book.memcache.php)
-  and [memcached](http://php.net/manual/en/book.memcached.php) extensions. This option can be considered as
-  the fastest one when dealing with cache in a distributed applications (e.g. with several servers, load
-  balancers, etc.)
-* [[yii\redis\Cache]]: implements a cache component based on [Redis](http://redis.io/) key-value store
-  (redis version 2.6.12 or higher is required).
-* [[yii\caching\WinCache]]: uses PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
-  ([see also](http://php.net/manual/en/book.wincache.php)) extension.
-* [[yii\caching\XCache]]: uses PHP [XCache](http://xcache.lighttpd.net/) extension.
-* [[yii\caching\ZendDataCache]]: uses
-  [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
-  as the underlying caching medium.
+* [[yii\caching\ApcCache]]: PHP の [APC](http://php.net/manual/ja/book.apc.php) 拡張モジュールを使用します。集中型の分厚いアプリケーションのキャッシュを扱うときには最速の一つとして考えることができます (例えば、サーバが 1 台であったり、非専用のロードバランサなど) 。
+* [[yii\caching\DbCache]]: キャッシュされたデータを格納するためにデータベースのテーブルを使用します。このキャッシュを使用するには [[yii\caching\DbCache::cacheTable]] で指定したテーブルを作成する必要があります。
+* [[yii\caching\DummyCache]]: 実際にはキャッシュを行わない、キャッシュの代替を提供します。このコンポーネントの目的は、キャッシュが利用できることをチェックするためのコードを簡略化することです。たとえば、開発中やサーバに実際のキャッシュサポートがない場合に、このキャッシュコンポーネントを使用することができます。そして、実際のキャッシュサポートが有効になったときに、対応するキャッシュコンポーネントに切替えて使用します。 どちらの場合も、`Yii::$app->cache` が null かも知れないと心配せずに、データを取得するために同じコード `Yii::$app->cache->get($key)` を使用できます。
+* [[yii\caching\FileCache]]: キャッシュされたデータを保存するために標準ファイルを使用します。これはページコンテンツなど大きなかたまりのデータに特に適しています。
+* [[yii\caching\MemCache]]: PHP の [Memcache](http://php.net/manual/ja/book.memcache.php) と [Memcached](http://php.net/manual/ja/book.memcached.php) 拡張モジュールを使用します。分散型のアプリケーションでキャッシュを扱うときには最速の一つとして考えることができます (例えば、複数台のサーバ構成であったり、ロードバランサなど) 。
+* [[yii\redis\Cache]]: [Redis](http://redis.io/) の key-value ストアに基づいてキャッシュコンポーネントを実装しています。(Redis の バージョン 2.6.12 以降が必要です) 。
+* [[yii\caching\WinCache]]: PHP の [WinCache](http://iis.net/downloads/microsoft/wincache-extension) ([関連リンク](http://php.net/manual/ja/book.wincache.php)) 拡張モジュールを使用します。
+* [[yii\caching\XCache]]: PHP の [XCache](http://xcache.lighttpd.net/) 拡張モジュールを使用します。
+* [[yii\caching\ZendDataCache]]: キャッシュメディアして [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) を使用します。
+
+> ヒント: 同じアプリケーション内で異なるキャッシュを使用することもできます。一般的なやり方として、小さくとも常に使用されるデータ (例えば、統計データなど) を格納する場合はメモリベースのキャッシュストレージを使用し、大きくて使用頻度の低いデータを格納する場合はファイルベース、またはデータベースのキャッシュストレージを使用します (例えば、ページコンテンツなど) 。
 
 
-> Tip: You may use different cache storage in the same application. A common strategy is to use memory-based
-  cache storage to store data that is small but constantly used (e.g. statistical data), and use file-based
-  or database-based cache storage to store data that is big and less frequently used (e.g. page content).
+## キャッシュ API <a name="cache-apis"></a>
 
+すべてのキャッシュコンポーネントが同じ基底クラス [[yii\caching\Cache]] を持っているので、以下の API をサポートしています。
 
-## Cache APIs <a name="cache-apis"></a>
+* [[yii\caching\Cache::get()|get()]]: 指定されたキーを用いてキャッシュからデータを取得します。キャッシュが見つからないか、もしくは有効期限が切れていたり無効になっている場合は false を返します。
+* [[yii\caching\Cache::set()|set()]]: キーによって識別されたデータをキャッシュに格納します。
+* [[yii\caching\Cache::add()|add()]]: キーがキャッシュ内で見つからない場合に、キーによって識別されたデータをキャッシュに格納します。
+* [[yii\caching\Cache::mget()|mget()]]: 指定されたキーを用いてキャッシュから複数のデータを取得します。
+* [[yii\caching\Cache::mset()|mset()]]: キャッシュに複数のデータを格納します。各データはキーによって識別されます。
+* [[yii\caching\Cache::madd()|madd()]]: キャッシュに複数のデータを格納します。各データはキーによって識別されます。もしキャッシュ内にキーがすでに存在する場合はスキップされます。
+* [[yii\caching\Cache::exists()|exists()]]: 指定されたキーがキャッシュ内で見つかったかどうかを示す値を返します。
+* [[yii\caching\Cache::delete()|delete()]]: キャッシュからキーによって識別されるデータを削除します。
+* [[yii\caching\Cache::flush()|flush()]]: キャッシュからすべてのデータを削除します。
 
-All cache components have the same base class [[yii\caching\Cache]] and thus support the following APIs:
+> 注意: [[yii\caching\Cache::get()|get()]] メソッドは、データがキャッシュ内に見つからないことを示すために戻り値として false を使用しているので、直接 boolean 型の `false` をキャッシュしないでください。代わり、配列内に `false` を置いてキャッシュすることによって、この問題を回避できます。
 
-* [[yii\caching\Cache::get()|get()]]: retrieves a data item from cache with a specified key. A false
-  value will be returned if the data item is not found in the cache or is expired/invalidated.
-* [[yii\caching\Cache::set()|set()]]: stores a data item identified by a key in cache.
-* [[yii\caching\Cache::add()|add()]]: stores a data item identified by a key in cache if the key is not found in the cache.
-* [[yii\caching\Cache::mget()|mget()]]: retrieves multiple data items from cache with the specified keys.
-* [[yii\caching\Cache::mset()|mset()]]: stores multiple data items in cache. Each item is identified by a key.
-* [[yii\caching\Cache::madd()|madd()]]: stores multiple data items in cache. Each item is identified by a key.
-  If a key already exists in the cache, the data item will be skipped.
-* [[yii\caching\Cache::exists()|exists()]]: returns a value indicating whether the specified key is found in the cache.
-* [[yii\caching\Cache::delete()|delete()]]: removes a data item identified by a key from the cache.
-* [[yii\caching\Cache::flush()|flush()]]: removes all data items from the cache.
+キャッシュされたデータを取得する際に発生するオーバーヘッドを減すために、MemCache, APC などのいくつかのキャッシュストレージはバッチモードで複数のキャッシュされた値の取得をサポートしています。[[yii\caching\Cache::mget()|mget()]] や [[yii\caching\Cache::madd()|madd()]] などの API はこの機能を十分に引き出すために提供されています。基礎となるキャッシュストレージがこの機能をサポートしていない場合には、シミュレートされます。
 
-> Note: Do not cache a `false` boolean value directly because the [[yii\caching\Cache::get()|get()]] method uses
-`false` return value to indicate the data item is not found in the cache. You may put `false` in an array and cache
-this array instead to avoid this problem.
-
-Some cache storage, such as MemCache, APC, support retrieving multiple cached values in a batch mode,
-which may reduce the overhead involved in retrieving cached data. The APIs [[yii\caching\Cache::mget()|mget()]]
-and [[yii\caching\Cache::madd()|madd()]] are provided to exploit this feature. In case the underlying cache storage
-does not support this feature, it will be simulated.
-
-Because [[yii\caching\Cache]] implements `ArrayAccess`, a cache component can be used like an array. The followings
-are some examples:
+[[yii\caching\Cache]] は `ArrayAccess` インターフェイスを継承しているので、キャッシュコンポーネントは配列のように扱うことができます。以下はいくつかの例です:
 
 ```php
-$cache['var1'] = $value1;  // equivalent to: $cache->set('var1', $value1);
-$value2 = $cache['var2'];  // equivalent to: $value2 = $cache->get('var2');
+$cache['var1'] = $value1;  // $cache->set('var1', $value1); と同等
+$value2 = $cache['var2'];  // $value2 = $cache->get('var2'); と同等
 ```
 
 
-### Cache Keys <a name="cache-keys"></a>
+### キャッシュのキーについて <a name="cache-keys"></a>
 
-Each data item stored in cache is uniquely identified by a key. When you store a data item in cache,
-you have to specify a key for it. Later when you retrieve the data item from cache, you should provide
-the corresponding key.
+キャッシュに格納される各データは、一意のキーによって識別されるため、キャッシュ内にデータを格納するときはキーを指定する必要があります。あとでキャッシュからデータを取得するときは、それに対応するキーを用意する、といった感じです。
 
-You may use a string or an arbitrary value as a cache key. When a key is not a string, it will be automatically
-serialized into a string.
+文字列またはキャッシュのキーとして、任意の値を使用することができます。キーが文字列でない場合は、自動的に文字列にシリアライズされます。
 
-A common strategy of defining a cache key is to include all determining factors in terms of an array.
-For example, [[yii\db\Schema]] uses the following key to cache schema information about a database table:
+キャッシュのキーを定義する一般的なやり方として、配列に決定要素を単位としてすべて含めることです。
+例えば [[yii\db\Schema]] はデータベースのテーブルに関するキャッシュスキーマ情報に以下のキーを使用しています:
 
 ```php
 [
-    __CLASS__,              // schema class name
-    $this->db->dsn,         // DB connection data source name
-    $this->db->username,    // DB connection login user
-    $name,                  // table name
+    __CLASS__,              // クラス名
+    $this->db->dsn,         // データベース接続のデータソース名
+    $this->db->username,    // データベース接続のログインユーザ
+    $name,                  // テーブル名
 ];
 ```
 
-As you can see, the key includes all necessary information needed to uniquely specify a database table.
+見ての通り、キーは一意にデータベースのテーブルを指定するために必要なすべての情報が含まれています。
 
-When the same cache storage is used by different applications, you should specify a unique cache key prefix
-for each application to avoid conflicts of cache keys. This can be done by configuring the [[yii\caching\Cache::keyPrefix]]
-property. For example, in the application configuration you can write the following code:
+同じキャッシュストレージが異なるアプリケーションによって使用されているときは、キャッシュのキーの競合を避けるために、各アプリケーションではユニークなキーの接頭辞を指定する必要があります。これは [[yii\caching\Cache::keyPrefix]] プロパティを設定することでできます。例えば、アプリケーションのコンフィギュレーションで以下のように書くことができます:
 
 ```php
 'components' => [
     'cache' => [
         'class' => 'yii\caching\ApcCache',
-        'keyPrefix' => 'myapp',       // a unique cache key prefix
+        'keyPrefix' => 'myapp',       // ユニークなキャッシュのキーの接頭辞
     ],
 ],
 ```
 
-To ensure interoperability, only alphanumeric characters should be used.
+相互運用性を確保するために、英数字のみを使用する必要があります。
 
 
-### Cache Expiration <a name="cache-expiration"></a>
+### キャッシュの有効期限 <a name="cache-expiration"></a>
 
-A data item stored in a cache will remain there forever unless it is removed because of some caching policy
-enforcement (e.g. caching space is full and the oldest data are removed). To change this behavior, you can provide
-an expiration parameter when calling [[yii\caching\Cache::set()|set()]] to store a data item. The parameter
-indicates for how many seconds the data item can remain valid in the cache. When you call
-[[yii\caching\Cache::get()|get()]] to retrieve the data item, if it has passed the expiration time, the method
-will return false, indicating the data item is not found in the cache. For example,
+キャッシュに格納されたデータは、いくつかのキャッシュポリシー (例えば、キャッシュスペースがいっぱいになったときは最も古いデータが削除される、など) の実施で除去されない限り、永遠に残り続けます。この動作を変えるために [[yii\caching\Cache::set()|set()]] で有効期限パラメータを指定することができます。パラメータはキャッシュ内に何秒間有効であるかを示します。[[yii\caching\Cache::get()|get()]] でデータを取得する際に有効期限が切れていた場合は、キャッシュ内にデータが見つからなかったことを示す false が返されます。例えば、
 
 ```php
-// keep the data in cache for at most 45 seconds
+// 最大で 45 秒間キャッシュ内にデータを保持する
 $cache->set($key, $data, 45);
 
 sleep(50);
 
 $data = $cache->get($key);
 if ($data === false) {
-    // $data is expired or is not found in the cache
+    // $data は有効期限が切れているか、またはキャッシュ内に見つからない
 }
 ```
 
 
-### Cache Dependencies <a name="cache-dependencies"></a>
+### キャッシュの依存関係 <a name="cache-dependencies"></a>
 
-Besides expiration setting, cached data item may also be invalidated by changes of the so-called *cache dependencies*.
-For example, [[yii\caching\FileDependency]] represents the dependency of a file's modification time.
-When this dependency changes, it means the corresponding file is modified. As a result, any outdated
-file content found in the cache should be invalidated and the [[yii\caching\Cache::get()|get()]] call
-should return false.
 
-Cache dependencies are represented as objects of [[yii\caching\Dependency]] descendant classes. When you call
-[[yii\caching\Cache::set()|set()]] to store a data item in the cache, you can pass along an associated cache
-dependency object. For example,
+有効期限の設定に加えて、キャッシュされたデータにはいわゆる *キャッシュの依存関係* の変化によって無効にすることもできます。例えば [[yii\caching\FileDependency]] はファイルの更新時刻の依存関係を表しています。依存関係が変更されたときに、対応するファイルが更新されることを意味しています。その結果、キャッシュ内で見つかった古いファイルのコンテンツは、無効とされるべきであり [[yii\caching\Cache::get()|get()]] は false を返します。
+
+キャッシュの依存関係は [[yii\caching\Dependency]] 子孫クラスのオブジェクトとして表現されます。[[yii\caching\Cache::set()|set()]] でキャッシュにデータを格納する際に、関連するキャッシュの依存関係を知らせることができます。例えば、
 
 ```php
-// Create a dependency on the modification time of file example.txt.
+// example.txt ファイルの変更時間への依存関係を作成
 $dependency = new \yii\caching\FileDependency(['fileName' => 'example.txt']);
 
-// The data will expire in 30 seconds.
-// It may also be invalidated earlier if example.txt is modified.
+// データは 30 秒で期限切れになります
+// さらに、依存関係にあるファイルが変更された場合、有効期限内でも無効になります
 $cache->set($key, $data, 30, $dependency);
 
-// The cache will check if the data has expired.
-// It will also check if the associated dependency was changed.
-// It will return false if any of these conditions is met.
+// データが有効期限切れの場合はキャッシュがチェックされます
+// 関連する依存関係が変更された場合にもチェックします
+// これらの条件のいずれかが満たされている場合は false を返します
 $data = $cache->get($key);
 ```
 
-Below is a summary of the available cache dependencies:
+以下は利用可能なキャッシュの依存関係の概要です:
 
-- [[yii\caching\ChainedDependency]]: the dependency is changed if any of the dependencies on the chain is changed.
-- [[yii\caching\DbDependency]]: the dependency is changed if the query result of the specified SQL statement is changed.
-- [[yii\caching\ExpressionDependency]]: the dependency is changed if the result of the specified PHP expression is changed.
-- [[yii\caching\FileDependency]]: the dependency is changed if the file's last modification time is changed.
-- [[yii\caching\TagDependency]]: associates a cached data item with one or multiple tags. You may invalidate
-  the cached data items with the specified tag(s) by calling [[yii\caching\TagDependency::invalidate()]].
+- [[yii\caching\ChainedDependency]]: チェーン上のいずれかの依存関係が変更された場合、依存関係が変更されます。
+- [[yii\caching\DbDependency]]: 指定された SQL 文のクエリ結果が変更された場合、依存関係が変更されます。
+- [[yii\caching\ExpressionDependency]]: 指定されたPHPの式の結果が変更された場合、依存関係が変更されます。
+- [[yii\caching\FileDependency]]: ファイルの最終更新時刻が変更された場合、依存関係が変更されます。
+- [[yii\caching\TagDependency]]: 一つまたは複数のタグを持つキャッシュされたデータを関連付けます。[[yii\caching\TagDependency::invalidate()]] を呼び出すことによって指定されたタグ(複数可)と、キャッシュされたデータを無効にすることができます。
 
 
-## Query Caching <a name="query-caching"></a>
+## クエリキャッシュ <a name="query-caching"></a>
 
-Query caching is a special caching feature built on top of data caching. It is provided to cache the result
-of database queries.
+クエリキャッシュは、データキャッシュ上に構築された特別なキャッシュ機能で、データベースのクエリ結果をキャッシュするために提供されています。
 
-Query caching requires a [[yii\db\Connection|DB connection]] and a valid `cache` application component.
-The basic usage of query caching is as follows, assuming `$db` is a [[yii\db\Connection]] instance:
+クエリキャッシュは [[yii\db\Connection|データベース接続]] と有効な `cache` コンポーネントを必要とします。
+`$db` を [[yii\db\Connection]] のインスタンスと仮定した場合、クエリキャッシュの基本的な使い方は以下のようになります:
 
 ```php
 $result = $db->cache(function ($db) {
 
-    // the result of the SQL query will be served from the cache
-    // if query caching is enabled and the query result is found in the cache
+    // クエリキャッシュが有効で、かつクエリ結果がキャッシュ内にある場合、
+    // SQL クエリ結果がキャッシュから提供されます
     return $db->createCommand('SELECT * FROM customer WHERE id=1')->queryOne();
 
 });
 ```
+クエリキャッシュは [DAO](db-dao.md) だけではなく [アクティブレコード](db-active-record.md) でも使用することができます。
 
-Query caching can be used for [DAO](db-dao.md) as well as [ActiveRecord](db-active-record.md).
-
-> Info: Some DBMS (e.g. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html))
-  also support query caching on the DB server side. You may choose to use either query caching mechanism.
-  The query caching described above has the advantage that you may specify flexible cache dependencies
-  and are potentially more efficient.
+> 情報: いくつかの DBMS (例えば [MySQL](http://dev.mysql.com/doc/refman/5.1/ja/query-cache.html)) でもデータベースのサーバサイドのクエリキャッシュをサポートしています。どちらのクエリキャッシュメカニズムも選べますが、前述した Yii のクエリキャッシュを使用することによって、キャッシュの依存関係を柔軟に指定できたり、潜在的にもより効率的でしょう。
 
 
-### Configurations <a name="query-caching-configs"></a>
+### 設定 <a name="query-caching-configs"></a>
 
-Query caching has three global configurable options through [[yii\db\Connection]]:
+クエリキャッシュは [[yii\db\Connection]] を通して 3 つのグローバルな設定可能オプションがあります:
 
-* [[yii\db\Connection::enableQueryCache|enableQueryCache]]: whether to turn on or off query caching.
-  It defaults to true. Note that to effectively turn on query caching, you also need to have a valid
-  cache, as specified by [[yii\db\Connection::queryCache|queryCache]].
-* [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: this represents the number of seconds
-  that a query result can remain valid in the cache. You can use 0 to indicate a query result should
-  remain in the cache forever. This property is the default value used when [[yii\db\Connection::cache()]]
-  is called without specifying a duration.
-* [[yii\db\Connection::queryCache|queryCache]]: this represents the ID of the cache application component.
-  It defaults to `'cache'`. Query caching is enabled only if there is a valid cache application component.
+* [[yii\db\Connection::enableQueryCache|enableQueryCache]]: クエリキャッシュを可能にするかどうか。デフォルトは true。効率的にクエリキャッシュをオンにするには [[yii\db\Connection::queryCache|queryCache]] によって指定し、さらに有効なキャッシュを持っている必要があることに注意してください。
+* [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: これはクエリ結果がキャッシュ内に有効な状態として維持できる秒数を表します。クエリキャッシュを永遠にキャッシュに残したい場合は 0 を指定することができます。このプロパティは [[yii\db\Connection::cache()]] の持続時間を指定せず呼び出されたときに使用されるデフォルト値です。
+* [[yii\db\Connection::queryCache|queryCache]]: これはキャッシュコンポーネントの ID を表します。デフォルトは `'cache'`。有効なキャッシュコンポーネントが存在する場合にのみ、クエリキャッシュが使用可能になります。
 
 
-### Usages <a name="query-caching-usages"></a>
+### 使い方 <a name="query-caching-usages"></a>
 
-You can use [[yii\db\Connection::cache()]] if you have multiple SQL queries that need to take advantage of
-query caching. The usage is as follows,
+クエリキャッシュを使用する必要がある複数の SQL クエリを持っている場合は [[yii\db\Connection::cache()]] を使用することができます。使い方としては以下のように、
 
 ```php
-$duration = 60;     // cache query results for 60 seconds.
-$dependency = ...;  // optional dependency
+$duration = 60;     // クエリ結果を 60 秒間 キャッシュ
+$dependency = ...;  // 依存関係のオプション
 
 $result = $db->cache(function ($db) {
 
-    // ... perform SQL queries here ...
+    // ... ここで SQL クエリを実行します ...
 
     return $result;
 
 }, $duration, $dependency);
 ```
 
-Any SQL queries in the anonymous function will be cached for the specified duration with the specified dependency.
-If the result of a query is found valid in the cache, the query will be skipped and the result will be served
-from the cache instead. If you do not specify the `$duration` parameter, the value of
-[[yii\db\Connection::queryCacheDuration|queryCacheDuration]] will be used instead.
+無名関数内の任意の SQL クエリは、指定した依存関係とともに指定された期間キャッシュされます。もしキャッシュ内に有効なクエリ結果が見つかった場合、クエリはスキップされ、その結果、代わりにキャッシュから提供されます。`$duration` の指定がない場合 [[yii\db\Connection::queryCacheDuration|queryCacheDuration]] で指定されている値が使用されます。
 
-Sometimes within `cache()`, you may want to disable query caching for some particular queries. You can use
-[[yii\db\Connection::noCache()]] in this case.
+また、`cache()` 内でいくつかの特定のクエリに対してクエリキャッシュを無効にすることもできます。この場合 [[yii\db\Connection::noCache()]] を使用します。
+
 
 ```php
 $result = $db->cache(function ($db) {
 
-    // SQL queries that use query caching
+    // クエリキャッシュを使用する SQL クエリ
 
     $db->noCache(function ($db) {
 
-        // SQL queries that do not use query caching
+        // クエリキャッシュを使用しない SQL クエリ
 
     });
 
@@ -325,22 +257,21 @@ $result = $db->cache(function ($db) {
 });
 ```
 
-If you just want to use query caching for a single query, you can call [[yii\db\Command::cache()]] when building
-the command. For example,
+単一のクエリのためにクエリキャッシュを使用する場合は、コマンドを構築するときに [[yii\db\Command::cache()]] を呼び出すことができます。例えば、
 
 ```php
-// use query caching and set query cache duration to be 60 seconds
+// クエリキャッシュを使い、期間を 60 秒にセットする
 $customer = $db->createCommand('SELECT * FROM customer WHERE id=1')->cache(60)->queryOne();
 ```
 
-You can also use [[yii\db\Command::noCache()]] to disable query caching for a single command. For example,
+また、ひとつのコマンドでクエリキャッシュを無効にするために [[yii\db\Command::noCache()]] を使用することもできます。例えば、
 
 ```php
 $result = $db->cache(function ($db) {
 
-    // SQL queries that use query caching
+    // クエリキャッシュを使用する SQL クエリ
 
-    // do not use query caching for this command
+    // このコマンドはクエリキャッシュを使用しない
     $customer = $db->createCommand('SELECT * FROM customer WHERE id=1')->noCache()->queryOne();
 
     // ...
@@ -350,13 +281,8 @@ $result = $db->cache(function ($db) {
 ```
 
 
-### Limitations <a name="query-caching-limitations"></a>
+### 制約 <a name="query-caching-limitations"></a>
 
-Query caching does not work with query results that contain resource handlers. For example,
-when using the `BLOB` column type in some DBMS, the query result will return a resource
-handler for the column data.
+リソースハンドルを返すようなクエリにはクエリキャッシュは働きません。例えばいくつかの DBMS において BLOB 型のカラムを用いる場合、クエリ結果はカラムデータについてリソースハンドルを返します。
 
-Some caching storage has size limitation. For example, memcache limits the maximum size
-of each entry to be 1MB. Therefore, if the size of a query result exceeds this limit,
-the caching will fail.
-
+いくつかのキャッシュストレージはサイズに制約があります。例えば Memcache では、各エントリのサイズは 1MB が上限値です。そのためクエリ結果のサイズがこの制約を越える場合、キャッシュは失敗します。
