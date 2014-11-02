@@ -12,8 +12,8 @@
 | 英語  | 日本語 | 別の日本語 | 悩度 | 詳細 |
 |:------|:-------|:-----------|:----:|:-----------|
 | business | 業務 | ビジネス | N2 | business rule は「ビジネスルール」|
-| configuration | コンフィギュレーション | 設定, 構成 | N3 | [#4](#4) |
-| configure | 構成する | 設定する | N3 | #4 |
+| configuration | コンフィギュレーション | 設定, 構成 | N3 | [#4 Configの訳語](https://github.com/yiijan/yii2-i18n-ja/issues/4) |
+| configure | 構成する | 設定する | N3 | [#4 Configの訳語](https://github.com/yiijan/yii2-i18n-ja/issues/4) |
 
 凡例
 ----
