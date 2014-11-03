@@ -1,11 +1,9 @@
-Page Caching
+ページキャッシュ
 ============
 
-Page caching refers to caching the content of a whole page on the server side. Later when the same page
-is requested again, its content will be served from the cache instead of regenerating it from scratch.
+ページキャッシュはサーバサイドでページ全体のコンテンツをキャッシュすることを言います。あとで、同じページに再度リクエストがあった場合、その内容を一から再び生成させるのではなく、キャッシュから提供するようにします。
 
-Page caching is supported by [[yii\filters\PageCache]], an [action filter](structure-filters.md).
-It can be used like the following in a controller class:
+ページキャッシュは [[yii\filters\PageCache]]、 [アクションフィルタ](structure-filters.md) によってサポートされています。これは、コントローラクラスで以下のように使用することができます：
 
 ```php
 public function behaviors()
@@ -27,14 +25,8 @@ public function behaviors()
 }
 ```
 
-The above code states that page caching should be used only for the `index` action; the page content should
-be cached for at most 60 seconds and should be variated by the current application language;
-and the cached page should be invalidated if the total number of posts is changed.
+上記のコードは、ページキャッシュが `index` アクションのみで使用され、そのページのコンテンツは最大 60 秒間キャッシュし、現在のアプリケーションの言語によって変化し、投稿の総数に変化があった場合キャッシュされたページが無効になる、ということを示しています。
 
-As you can see, page caching is very similar to [fragment caching](caching-fragment.md). They both support options such
-as `duration`, `dependencies`, `variations`, and `enabled`. Their main difference is that page caching is
-implemented as an [action filter](structure-filters.md) while fragment caching a [widget](structure-widgets.md).
+見てわかるように、ページキャッシュは [フラグメントキャッシュ](caching-fragment.md) ととてもよく似ています。それらは両方とも `duration`、`dependencies`、`variations`、そして `enabled` などのオプションをサポートしています。主な違いとしては、ページキャッシュは [アクションフィルタ](structure-filters.md) として、フラグメントキャッシュは [ウィジェット](structure-widgets.md) として実装されているということです。
 
-You can use [fragment caching](caching-fragment.md) as well as [dynamic content](caching-fragment.md#dynamic-content)
-together with page caching.
-
+また、ページキャッシュと一緒に [ダイナミックコンテンツ](caching-fragment.md#dynamic-content) だけでなく [フラグメントキャッシュ](caching-fragment.md) も使用することができます。
