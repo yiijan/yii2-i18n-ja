@@ -1,63 +1,50 @@
-Fragment Caching
+フラグメントキャッシュ
 ================
 
-Fragment caching refers to caching a fragment of a Web page. For example, if a page displays a summary of
-yearly sale in a table, you can store this table in cache to eliminate the time needed to generate this table
-for each request. Fragment caching is built on top of [data caching](caching-data.md).
+フラグメントキャッシュは、ウェブページの断片をキャッシュすることを言います。例えば、ページ内の表に年間販売の概要が表示されている場合、リクエスト毎にこの表を生成するのにかかる時間を削減するために、キャッシュにこの表を格納することができます。フラグメントキャッシュは [データキャッシュ](caching-data.md) 上に構築されています。
 
-To use fragment caching, use the following construct in a [view](structure-views.md):
+フラグメントキャッシュを使用するには [ビュー](structure-views.md) で以下の構文を使用します:
 
 ```php
 if ($this->beginCache($id)) {
 
-    // ... generate content here ...
+    // ... ここに生成するコンテンツを書く ...
 
     $this->endCache();
 }
 ```
 
-That is, enclose content generation logic in a pair of [[yii\base\View::beginCache()|beginCache()]] and
-[[yii\base\View::endCache()|endCache()]] calls. If the content is found in the cache, [[yii\base\View::beginCache()|beginCache()]]
-will render the cached content and return false, thus skip the content generation logic.
-Otherwise, your content generation logic will be called, and when [[yii\base\View::endCache()|endCache()]]
-is called, the generated content will be captured and stored in the cache.
+つまり [[yii\base\View::beginCache()|beginCache()]] と [[yii\base\View::endCache()|endCache()]] をペアにして囲み、その中にコンテンツ生成ロジックを書いていきます。コンテンツがキャッシュ内で見つかった場合、キャッシュされたコンテンツをレンダリングし [[yii\base\View::beginCache()|beginCache()]] は false を返します。結果として、コンテンツ生成ロジックはスキップされます。それ以外の場合はコンテンツ生成ロジックが呼ばれ、そして [[yii\base\View::endCache()|endCache()]] が呼ばれたとき生成されたコンテンツがキャプチャされ、キャッシュに格納されます。
 
-Like [data caching](caching-data.md), a unique `$id` is needed to identify a content cache.
+[データキャッシュ](caching-data.md) と同様に、キャッシュされたコンテンツを識別するためにユニークな `$id` が必要になります。
 
 
-## Caching Options <a name="caching-options"></a>
+## キャッシュのオプション <a name="caching-options"></a>
 
-You may specify additional options about fragment caching by passing the option array as the second
-parameter to the [[yii\base\View::beginCache()|beginCache()]] method. Behind the scene, this option array
-will be used to configure a [[yii\widgets\FragmentCache]] widget which implements the actual fragment caching
-functionality.
+[[yii\base\View::beginCache()|beginCache()]] メソッドの 2 番目のパラメータを配列にすることで、フラグメントキャッシュに関する追加のオプションを指定することもできます。裏で、この配列のオプションは実際にフラグメントキャッシュ機能を実装している [[yii\widgets\FragmentCache]] ウィジェットを構成するために使用されます。
 
-### Duration <a name="duration"></a>
+### 持続時間 <a name="duration"></a>
 
-Perhaps the most commonly used option of fragment caching is [[yii\widgets\FragmentCache::duration|duration]].
-It specifies for how many seconds the content can remain valid in a cache. The following code
-caches the content fragment for at most one hour:
+
+おそらくフラグメントキャッシュで通常よく使われるであろうオプションは [[yii\widgets\FragmentCache::duration|duration]] でしょう。このオプションにはコンテンツがどれだけの時間キャッシュ内において有効であるかを指定します。以下のコードは最大で 1 時間コンテンツの断片をキャッシュします:
 
 ```php
 if ($this->beginCache($id, ['duration' => 3600])) {
 
-    // ... generate content here ...
+    // ... ここに生成するコンテンツを書く ...
 
     $this->endCache();
 }
 ```
 
-If the option is not set, it will take the default value 60, which means the cached content will expire in 60 seconds.
+オプションがセットされていない場合は、デフォルトである 60 が使われ、つまり有効期限が 60 秒間のキャッシュされたコンテンツを意味します。
 
 
-### Dependencies <a name="dependencies"></a>
+### 依存関係 <a name="dependencies"></a>
 
-Like [data caching](caching-data.md#cache-dependencies), content fragment being cached can also have dependencies.
-For example, the content of a post being displayed depends on whether or not the post is modified.
+[データキャッシュ](caching-data.md#cache-dependencies) と同様に、キャッシュされたコンテンツの断片は依存関係を持つことができます。例えば、表示されている投稿の内容は、投稿が変更されたか否かに依存する、といった具合です。
 
-To specify a dependency, set the [[yii\widgets\FragmentCache::dependency|dependency]] option, which can be
-either an [[yii\caching\Dependency]] object or a configuration array for creating a dependency object. The
-following code specifies that the fragment content depends on the change of the `updated_at` column value:
+依存関係を指定するには [[yii\widgets\FragmentCache::dependency|dependency]] オプションに [[yii\caching\Dependency]] オブジェクトを指定するか、または依存関係オブジェクトを作成するための配列構成を指定します。以下のコードはコンテンツの断片が `updated_at` カラムの値の変化に依存していることを指定しています:
 
 ```php
 $dependency = [
@@ -67,110 +54,87 @@ $dependency = [
 
 if ($this->beginCache($id, ['dependency' => $dependency])) {
 
-    // ... generate content here ...
+    // ... ここに生成するコンテンツを書く ...
 
     $this->endCache();
 }
 ```
 
 
-### Variations <a name="variations"></a>
+### バリエーション <a name="variations"></a>
 
-Content being cached may be variated according to some parameters. For example, for a Web application
-supporting multiple languages, the same piece of view code may generate the content in different languages.
-Therefore, you may want to make the cached content variated according to the current application language.
+キャッシュされたコンテンツはいくつかのパラメータによって変化させることもできます。例えば、複数の言語をサポートしているウェブアプリケーションに対して、ビューコードの同じ部分を、異なる言語で生成することができます。現在のアプリケーションの言語に応じて、キャッシュされたコンテンツに変更を加えるといったことが可能になります。
 
-To specify cache variations, set the [[yii\widgets\FragmentCache::variations|variations]] option, which
-should be an array of scalar values, each representing a particular variation factor. For example,
-to make the cached content variated by the language, you may use the following code:
+キャッシュのバリエーションを指定するには [[yii\widgets\FragmentCache::variations|variations]] オプションに配列で、それぞれが特定のバリエーションの要素を表すスカラー値をセットします。例えば、言語によってキャッシュされたコンテンツを変化させるには、以下のコードを使うことができます:
 
 ```php
 if ($this->beginCache($id, ['variations' => [Yii::$app->language]])) {
 
-    // ... generate content here ...
+    // ... ここに生成するコンテンツを書く ...
 
     $this->endCache();
 }
 ```
 
 
-### Toggling Caching <a name="toggling-caching"></a>
+### トグルキャッシュ <a name="toggling-caching"></a>
 
-Sometimes you may want to enable fragment caching only when certain conditions are met. For example, for a page
-displaying a form, you only want to cache the form when it is initially requested (via GET request). Any
-subsequent display (via POST request) of the form should not be cached because the form may contain user input.
-To do so, you may set the [[yii\widgets\FragmentCache::enabled|enabled]] option, like the following:
+また、ある条件が満たされた場合にのみフラグメントキャッシュを有効にすることもできます。たとえば、フォームが表示されているページに対して、最初の (GET リクエストによる) リクエストの場合だけはキャッシュしたいと思いますが、その後の (POST リクエストによる) フォームの表示では、フォームにユーザ入力が含まれている可能性があるため、キャッシュをすべきではありません。これを行うには、以下のように [[yii\widgets\FragmentCache::enabled|enabled]] オプションをセットします:
 
 ```php
 if ($this->beginCache($id, ['enabled' => Yii::$app->request->isGet])) {
 
-    // ... generate content here ...
+    // ... ここに生成するコンテンツを書く ...
 
     $this->endCache();
 }
 ```
 
 
-## Nested Caching <a name="nested-caching"></a>
+## キャッシュのネスト <a name="nested-caching"></a>
 
-Fragment caching can be nested. That is, a cached fragment can be enclosed within another fragment which is also cached.
-For example, the comments are cached in an inner fragment cache, and they are cached together with the
-post content in an outer fragment cache. The following code shows how two fragment caches can be nested:
+フラグメントキャッシュはネストすることができます。つまり、キャッシュされる断片を、より大きなキャッシュされる断片で囲むことができます。例えば、コメントが内側のフラグメントキャッシュ内にキャッシュされ、それらが外側のフラグメントキャッシュに記事内容と一緒にキャッシュされます。以下のコードは 2 つのフラグメントキャッシュをどのようにネストできるかを示したものです:
 
 ```php
 if ($this->beginCache($id1)) {
 
-    // ...content generation logic...
+    // ...コンテンツ生成ロジック...
 
     if ($this->beginCache($id2, $options2)) {
 
-        // ...content generation logic...
+        // ...コンテンツ生成ロジック...
 
         $this->endCache();
     }
 
-    // ...content generation logic...
+    // ...コンテンツ生成ロジック...
 
     $this->endCache();
 }
 ```
 
-Different caching options can be set for the nested caches. For example, the inner caches and the outer caches
-can use different cache duration values. Even when the data cached in the outer cache is invalidated, the inner
-cache may still provide the valid inner fragment. However, it is not true vice versa. If the outer cache is
-evaluated to be valid, it will continue to provide the same cached copy even after the content in the
-inner cache has been invalidated. Therefore, you must be careful in setting the durations or the dependencies
-of the nested caches, otherwise the outdated inner fragments may be kept in the outer fragment.
+ネストされたキャッシュには、異なるキャッシュオプションを設定することができます。 たとえば、上記の例における内側のキャッシュと外側のキャッシュに対して、異なる持続期間の値を設定する事が可能です。 これによって、外側のキャッシュでキャッシュされたデータが無効になった場合でも、内側のキャッシュが有効な内側の断片を提供することが可能になります。 しかし、その逆は真ではありません。 外側のキャッシュが有効であると判断された場合には、内側のキャッシュが無効になった後でも、外側のキャッシュが古くなったコンテンツのコピーを提供し続けます。 ネストされたキャッシュの持続時間や依存関係の設定を間違うと、無効になった内側のキャッシュデータが外側のキャッシュに残り続けることになるので、注意が必要です。
 
 
-## Dynamic Content <a name="dynamic-content"></a>
+## ダイナミックコンテンツ <a name="dynamic-content"></a>
 
-When using fragment caching, you may encounter the situation where a large fragment of content is relatively
-static except at one or a few places. For example, a page header may display the main menu bar together with
-the name of the current user. Another problem is that the content being cached may contain PHP code that
-must be executed for every request (e.g. the code for registering an asset bundle). Both problems can be solved
-by the so-called *dynamic content* feature.
+フラグメントキャッシュを使用する際、出力全体が比較的静的で、一ヶ所ないし数ヶ所だけが例外的に動的であるというような状況に遭遇します。例えば、ページ上部にはメインメニューバーと現在のユーザの名前とが一緒に表示される場合があります。他には、リクエスト毎に実行しなければいけない PHP のコードが含まれている場合(例えば、アセットバンドルを登録するためのコード)などです。この両方の問題は、いわゆる *ダイナミックコンテンツ* 機能によって解決することができます。
 
-A dynamic content means a fragment of output that should not be cached even if it is enclosed within
-a fragment cache. To make the content dynamic all the time, it has to be generated by executing some PHP code
-for every request, even if the enclosing content is being served from cache.
+ダイナミックコンテンツは、それがフラグメントキャッシュの中に含まれていても、キャッシュすべきではない出力の部分を意味します。コンテンツを常に動的にするためには、外側のコンテンツがキャッシュから提供されている場合でも、すべてのリクエストに対して、いくつかのPHP コードを実行することにより生成しなければいけません。
 
-You may call [[yii\base\View::renderDynamic()]] within a cached fragment to insert dynamic content
-at the desired place, like the following,
+以下のように、ダイナミックコンテンツを目的の場所に挿入するには、キャッシュされた断片内で [[yii\base\View::renderDynamic()]] を呼び出します。
 
 ```php
 if ($this->beginCache($id1)) {
 
-    // ...content generation logic...
+    // ...コンテンツ生成ロジック...
 
     echo $this->renderDynamic('return Yii::$app->user->identity->name;');
 
-    // ...content generation logic...
+    // ...コンテンツ生成ロジック...
 
     $this->endCache();
 }
 ```
 
-The [[yii\base\View::renderDynamic()|renderDynamic()]] method takes a piece of PHP code as its parameter.
-The return value of the PHP code is treated as the dynamic content. The same PHP code will be executed
-for every request, no matter the enclosing fragment is being served from cached or not.
+[[yii\base\View::renderDynamic()|renderDynamic()]] メソッドはパラメータとして PHP コードの一部を使用します。PHP コードの戻り値は、ダイナミックコンテンツとして扱われます。同じ PHP コードはすべてのリクエストに対して実行されますが、囲まれている断片がキャッシュから提供されているか否かは問いません。
