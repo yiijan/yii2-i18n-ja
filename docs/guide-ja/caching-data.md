@@ -7,14 +7,14 @@
 以下はデータキャッシュの典型的な利用パターンを示したコードです。`$cache` は [キャッシュコンポーネント](#cache-components) を指します:
 
 ```php
-// キャッシュを取得しようとして
+// キャッシュから $data を取得しようと試みる
 $data = $cache->get($key);
 
 if ($data === false) {
 
-    // キャッシュが見つからない場合は一から作る
+    // キャッシュの中に $data が見つからない場合は一から作る
 
-    // 次回はキャッシュから値を取得できるように $data に格納する
+    // 次回はそれを取得できるように $data をキャッシュに格納する
     $cache->set($key, $data);
 }
 
@@ -213,7 +213,7 @@ $result = $db->cache(function ($db) {
 
 クエリキャッシュは [[yii\db\Connection]] を通して 3 つのグローバルな設定可能オプションがあります:
 
-* [[yii\db\Connection::enableQueryCache|enableQueryCache]]: クエリキャッシュを可能にするかどうか。デフォルトは true。効率的にクエリキャッシュをオンにするには [[yii\db\Connection::queryCache|queryCache]] によって指定し、さらに有効なキャッシュを持っている必要があることに注意してください。
+* [[yii\db\Connection::enableQueryCache|enableQueryCache]]: クエリキャッシュを可能にするかどうか。デフォルトは true。実効的にクエリキャッシュをオンにするには [[yii\db\Connection::queryCache|queryCache]] によって指定し、さらに有効なキャッシュを持っている必要があることに注意してください。
 * [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: これはクエリ結果がキャッシュ内に有効な状態として維持できる秒数を表します。クエリキャッシュを永遠にキャッシュに残したい場合は 0 を指定することができます。このプロパティは [[yii\db\Connection::cache()]] の持続時間を指定せず呼び出されたときに使用されるデフォルト値です。
 * [[yii\db\Connection::queryCache|queryCache]]: これはキャッシュコンポーネントの ID を表します。デフォルトは `'cache'`。有効なキャッシュコンポーネントが存在する場合にのみ、クエリキャッシュが使用可能になります。
 
