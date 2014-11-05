@@ -1,36 +1,31 @@
-HTTP Caching
+HTTP キャッシュ
 ============
 
-Besides server-side caching that we have described in the previous sections, Web applications may
-also exploit client-side caching to save the time for generating and transmitting the same page content.
+前の節で説明したサーバーサイドのキャッシュに加えて、ウェブアプリケーションは、同じページコンテンツを生成し送信する時間を節約するために、クライアントサイドでもキャッシュを利用することができます。
 
-To use client-side caching, you may configure [[yii\filters\HttpCache]] as a filter for controller
-actions whose rendering result may be cached on the client side. [[yii\filters\HttpCache|HttpCache]]
-only works for `GET` and `HEAD` requests. It can handle three kinds of cache-related HTTP headers for these requests:
+クライアントサイドのキャッシュを使用するには、レンダリング結果をキャッシュできるように、コントローラアクションのフィルタとして [[yii\filters\HttpCache]] を設定します。[[yii\filters\HttpCache]] は `GET` と `HEAD` リクエストに対してのみ動作し、また、それらのリクエストは 3 種類のキャッシュ関連の HTTP ヘッダを扱うことができます:
 
 * [[yii\filters\HttpCache::lastModified|Last-Modified]]
 * [[yii\filters\HttpCache::etagSeed|Etag]]
 * [[yii\filters\HttpCache::cacheControlHeader|Cache-Control]]
 
 
-## `Last-Modified` Header <a name="last-modified"></a>
+## `Last-Modified` ヘッダ <a name="last-modified"></a>
 
-The `Last-Modified` header uses a timestamp to indicate if the page has been modified since the client caches it.
+`Last-Modified` ヘッダは、クライアントがそれをキャッシュする時から、ページが変更されたかどうかを示すために、タイムスタンプを使用しています。
 
-You may configure the [[yii\filters\HttpCache::lastModified]] property to enable sending
-the `Last-Modified` header. The property should be a PHP callable returning a UNIX timestamp about
-the page modification time. The signature of the PHP callable should be as follows,
+`Last-Modified` ヘッダの送信を有効にするには [[yii\filters\HttpCache::lastModified]] プロパティを、ページの変更時間に関する UNIX タイムスタンプを返す PHP の callable 型で、以下のようなシグネチャで構成していきます。
 
 ```php
 /**
- * @param Action $action the action object that is being handled currently
- * @param array $params the value of the "params" property
- * @return integer a UNIX timestamp representing the page modification time
+ * @param Action $action 現在扱っているアクションオブジェクト
+ * @param array $params "params" プロパティの値
+ * @return integer ページの更新時刻を表す UNIX タイムスタンプ
  */
 function ($action, $params)
 ```
 
-The following is an example of making use of the `Last-Modified` header:
+以下は `Last-Modified` ヘッダを使用する例です:
 
 ```php
 public function behaviors()
@@ -48,34 +43,25 @@ public function behaviors()
 }
 ```
 
-The above code states that HTTP caching should be enabled for the `index` action only. It should
-generate a `Last-Modified` HTTP header based on the last update time of posts. When a browser visits
-the `index` page for the first time, the page will be generated on the server and sent to the browser;
-If the browser visits the same page again and there is no post being modified during the period,
-the server will not re-generate the page, and the browser will use the cached version on the client side.
-As a result, server-side rendering and page content transmission are both skipped.
+上記のコードは `index` アクションでのみ HTTP キャッシュを有効にしている状態です。投稿の最終更新時刻に基づいて `Last-Modified` を生成する必要があります。ブラウザが初めて `index` ページにアクセスすると、ページはサーバ上で生成されブラウザに送信されます。もしブラウザが再度同じページにアクセスし、その期間中に投稿に変更がない場合は、ブラウザはクライアントサイドにキャッシュしたものを使用するので、サーバはページを再生成することはありません。その結果、サーバサイドのレンダリング処理とページコンテンツの送信は両方ともスキップされます。
 
 
-## `ETag` Header <a name="etag"></a>
+## `ETag` ヘッダ <a name="etag"></a>
 
-The "Entity Tag" (or `ETag` for short) header use a hash to represent the content of a page. If the page
-is changed, the hash will be changed as well. By comparing the hash kept on the client side with the hash
-generated on the server side, the cache may determine whether the page has been changed and should be re-transmitted.
+"Entity Tag" (略して `ETag`) ヘッダはページコンテンツを表すためにハッシュを使用します。ページが変更された場合ハッシュも同様に変更されます。サーバサイドで生成されたハッシュとクライアントサイドで保持しているハッシュを比較することによって、ページが変更されたかどうか、また再送信するべきかどうかを決定します。
 
-You may configure the [[yii\filters\HttpCache::etagSeed]] property to enable sending the `ETag` header.
-The property should be a PHP callable returning a seed for generating the ETag hash. The signature of the PHP callable
-should be as follows,
+`ETag` ヘッダの送信を有効にするには [[yii\filters\HttpCache::etagSeed]] プロパティを設定します。プロパティは ETag のハッシュを生成するためのシードを返す PHP の callable 型で、以下のようなシグネチャで構成していきます。
 
 ```php
 /**
- * @param Action $action the action object that is being handled currently
- * @param array $params the value of the "params" property
- * @return string a string used as the seed for generating an ETag hash
+ * @param Action $action 現在扱っているアクションオブジェクト
+ * @param array $params "params" プロパティの値
+ * @return string ETag のハッシュを生成するためのシードとして使用する文字列
  */
 function ($action, $params)
 ```
 
-The following is an example of making use of the `ETag` header:
+以下は `ETag` ヘッダを使用している例です:
 
 ```php
 public function behaviors()
@@ -93,51 +79,27 @@ public function behaviors()
 }
 ```
 
-The above code states that HTTP caching should be enabled for the `view` action only. It should
-generate an `ETag` HTTP header based on the title and content of the requested post. When a browser visits
-the `view` page for the first time, the page will be generated on the server and sent to the browser;
-If the browser visits the same page again and there is no change to the title and content of the post,
-the server will not re-generate the page, and the browser will use the cached version on the client side.
-As a result, server-side rendering and page content transmission are both skipped.
+上記のコードは `view` アクションでのみ HTTP キャッシュを有効にしている状態です。リクエストされた投稿のタイトルとコンテンツに基づいて HTTP の `Etag` ヘッダを生成しています。ブラウザが初めて `view` ページにアクセスするときに、ページがサーバ上で生成されブラウザに送信されます。ブラウザが再度同じページにアクセスし、投稿のタイトルやコンテンツに変更がない場合には、サーバはページを再生成せず、ブラウザはクライアントサイトにキャッシュしたものを使用します。その結果、サーバサイドのレンダリング処理とページコンテンツ送信の両方ともスキップされます。
 
-ETags allow more complex and/or more precise caching strategies than `Last-Modified` headers.
-For instance, an ETag can be invalidated if the site has switched to another theme.
+ETag は `Last-Modified` ヘッダよりも複雑かつ、より正確なキャッシング方式を可能にします。例えば、サイトが別のテーマに切り替わった場合には ETag を無効化する、といったことができます。
 
-Expensive ETag generation may defeat the purpose of using `HttpCache` and introduce unnecessary overhead,
-since they need to be re-evaluated on every request. Try to find a simple expression that invalidates
-the cache if the page content has been modified.
+ETag はリクエスト毎に再評価する必要があるため、負荷の高いもの生成すると `HttpCache` の本来の目的を損なって不必要なオーバーヘッドが生じる場合があるので、ページのコンテンツが変更されたときにキャッシュを無効化するための式は単純なものを指定するようにして下さい。
 
-> Note: In compliance to [RFC 7232](http://tools.ietf.org/html/rfc7232#section-2.4),
-  `HttpCache` will send out both `ETag` and `Last-Modified` headers if they are both configured.
-  And if the client sends both of the `If-None-Match` header and the `If-Modified-Since` header, only the former
-  will be respected.
+> 注意: [RFC 7232](http://tools.ietf.org/html/rfc7232#section-2.4) に準拠して `Etag` と `Last-Modified` ヘッダの両方を設定した場合、`HttpCache` はその両方とも送信します。また、もし `If-None-Match` ヘッダと `If-Modified-Since` ヘッダの両方を送信した場合は前者のみが尊重されます。
 
+## `Cache-Control` ヘッダ <a name="cache-control"></a>
 
-## `Cache-Control` Header <a name="cache-control"></a>
-
-The `Cache-Control` header specifies the general caching policy for pages. You may send it by configuring
-the [[yii\filters\HttpCache::cacheControlHeader]] property with the header value. By default, the following
-header will be sent:
+`Cache-Control` ヘッダはページのための一般的なキャッシュポリシーを指定します。ヘッダ値に [[yii\filters\HttpCache::cacheControlHeader]] プロパティを設定することで、それを送ることができます。デフォルトでは、以下のヘッダーが送信されます:
 
 ```
 Cache-Control: public, max-age=3600
 ```
 
-## Session Cache Limiter <a name="session-cache-limiter"></a>
+## セッションキャッシュリミッタ<a name="session-cache-limiter"></a>
 
-When a page uses session, PHP will automatically send some cache-related HTTP headers as specified in
-the `session.cache_limiter` PHP INI setting. These headers may interfere or disable the caching
-that you want from `HttpCache`. To prevent this problem, by default `HttpCache` will disable sending
-these headers automatically. If you want to change this behavior, you should configure the
-[[yii\filters\HttpCache::sessionCacheLimiter]] property. The property can take a string value, including
-`public`, `private`, `private_no_expire`, and `nocache`. Please refer to the PHP manual about
-[session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
-for explanations about these values.
+ページでセッションを使用している場合、PHP はいくつかのキャッシュ関連の HTTP ヘッダ(PHP の設定ファイル内で指定されている session.cache_limiter など)を自動的に送信します。これらのヘッダは `HttpCache` で妨害したり、必要なキャッシュを無効にしたりできます。この動作を変更したい場合は [[yii\filters\HttpCache::sessionCacheLimiter]] プロパティを設定します。プロパティには `public`、`private`、`private_no_expire`、そして `nocache` などの文字列の値を使用することができます。これらの値についての説明は [session_cache_limiter()](http://www.php.net/manual/ja/function.session-cache-limiter.php) を参照してください。
 
 
-## SEO Implications <a name="seo-implications"></a>
+## SEO への影響 <a name="seo-implications"></a>
 
-Search engine bots tend to respect cache headers. Since some crawlers have a limit on how many pages
-per domain they process within a certain time span, introducing caching headers may help indexing your
-site as they reduce the number of pages that need to be processed.
-
+検索エンジンのボットはキャッシュヘッダを尊重する傾向があります。 クローラの中には、一定期間内に処理するドメインごとのページ数に制限を持っているものもあるため、キャッシュヘッダを導入して、処理の必要があるページ数を減らしてやると、サイトのインデックスの作成を促進できるかも知れません。
