@@ -1,18 +1,19 @@
-Behaviors
+ビヘイビア
 =========
 
-Behaviors are instances of [[yii\base\Behavior]], or of a child class. Behaviors, also known
-as [mixins](http://en.wikipedia.org/wiki/Mixin), allow you to enhance the functionality
-of an existing [[yii\base\Component|component]] class without needing to change the class's inheritance.
-Attaching a behavior to a component "injects" the behavior's methods and properties into the component, making those methods and properties accessible as if they were defined in the component class itself. Moreover, a behavior
-can respond to the [events](concept-events.md) triggered by the component, which allows behaviors to also customize the normal
-code execution of the component.
+ビヘイビアは [[yii\base\Behavior]] 、あるいはその子クラスのインスタンスです。ビヘイビアは
+[ミックスイン](http://en.wikipedia.org/wiki/Mixin) としても知られ、既存の [[yii\base\Component|component]] クラスの
+機能を、クラスの継承を変更せずに拡張することができます。コンポーネントにビヘイビアをアタッチすると、その
+コンポーネントにはビヘイビアのメソッドとプロパティが "注入" され、それらのメソッドとプロパティは、
+コンポーネントクラス自体に定義されているされているかのようにアクセスできるようになります。また、ビヘイビアは、
+コンポーネントによってトリガされた [イベント](concept-events.md) に応答することができるので、
+ビヘイビアでコンポーネントの通常のコード実行をカスタマイズすることができます。
 
 
-Defining Behaviors <a name="defining-behaviors"></a>
+ビヘイビアの定義 <a name="defining-behaviors"></a>
 ------------------
 
-To define a behavior, create a class that extends [[yii\base\Behavior]], or extends a child class. For example:
+ビヘイビアを定義するには、 [[yii\base\Behavior]] あるいは子クラスを継承するクラスを作成します。たとえば:
 
 ```php
 namespace app\components;
@@ -42,19 +43,19 @@ class MyBehavior extends Behavior
 }
 ```
 
-The above code defines the behavior class `app\components\MyBehavior`, with two properties--
-`prop1` and `prop2`--and one method `foo()`. Note that property `prop2`
-is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\Object]], and therefore supports defining [properties](concept-properties.md) via getters and setters.
+上のコードは、 `app\components\MyBehavior` という、2つのプロパティ -- `prop1` と `prop2` -- と
+`foo()` メソッドを持つビヘイビアクラスを定義します。`prop2` プロパティは、 `getProp2()` getter メソッドと `setProp2()` setter メソッドで定義されることに着目してください。
+[[yii\base\Behavior]] は [[yii\base\Object]] を継承しているので、getter と​​ setter による [プロパティ](concept-properties.md) 定義をサポートします。
 
-Because this class is a behavior, when it is attached to a component, that component will then also have the the `prop1` and `prop2` properties and the `foo()` method.
+このクラスはビヘイビアなので、コンポーネントにアタッチされると、そのコンポーネントは `prop1` と `prop2` プロパティ、それと `foo()` メソッドを持つようになります。
 
-> Tip: Within a behavior, you can access the component that the behavior is attached to through the [[yii\base\Behavior::owner]] property.
+> Tip: ビヘイビア内から、[[yii\base\Behavior::owner]] プロパティを介して、ビヘイビアをアタッチしたコンポーネントにアクセスすることができます。
 
-Handling Component Events
+コンポーネントイベントのハンドリング
 ------------------
 
-If a behavior needs to respond to the events triggered by the component it is attached to, it should override the
-[[yii\base\Behavior::events()]] method. For example:
+ビヘイビアが、アタッチされたコンポーネントがトリガするイベントに応答する必要がある場合は、
+[[yii\base\Behavior::events()]] メソッドをオーバーライドしましょう。たとえば:
 
 ```php
 namespace app\components;
@@ -80,30 +81,30 @@ class MyBehavior extends Behavior
 }
 ```
 
-The [[yii\base\Behavior::events()|events()]] method should return a list of events and their corresponding handlers.
-The above example declares that the [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event exists and defines
-its handler, `beforeValidate()`. When specifying an event handler, you may use one of the following formats:
+[[yii\base\Behavior::events()]] メソッドは、イベントとそれに対応するハンドラのリストを返します。
+上の例では [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] イベントがあること、
+そのハンドラ定義である `beforeValidate()` を宣言しています。イベントハンドラを指定するときは、以下の表記方法が使えます:
 
-* a string that refers to the name of a method of the behavior class, like the example above
-* an array of an object or class name, and a method name as a string (without parentheses), e.g., `[$object, 'methodName']`;
-* an anonymous function
+* ビヘイビアクラスのメソッド名を参照する文字列 (上の例など)
+* オブジェクトまたはクラス名と文字列のメソッド名 (括弧なし) 例 `[$object, 'methodName']`
+* 無名関数
 
-The signature of an event handler should be as follows, where `$event` refers to the event parameter. Please refer
-to the [Events](concept-events.md) section for more details about events.
+イベントハンドラのシグネチャは次のようにしてください。`$event` はイベントのパラメータを参照します。イベントの詳細については
+[イベント](concept-events.md) セクションを参照してください。
 
 ```php
 function ($event) {
 }
 ```
 
-Attaching Behaviors <a name="attaching-behaviors"></a>
+ビヘイビアのアタッチ <a name="attaching-behaviors"></a>
 -------------------
 
-You can attach a behavior to a [[yii\base\Component|component]] either statically or dynamically. The former is more common in practice.
+[[yii\base\Component|component]] へのビヘイビアのアタッチは、静的にも動的にも可能です。実際は、前者のほうがより一般的ですが。
 
-To attach a behavior statically, override the [[yii\base\Component::behaviors()|behaviors()]] method of the component
-class to which the behavior is being attached. The [[yii\base\Component::behaviors()|behaviors()]] method should return a list of behavior [configurations](concept-configurations.md).
-Each behavior configuration can be either a behavior class name or a configuration array:
+ビヘイビアを静的にアタッチするには、ビヘイビアをアタッチしたいコンポーネントクラスの [[yii\base\Component::behaviors()|behaviors()]] メソッドをオーバーライドします。
+[[yii\base\Component::behaviors()|behaviors()]] メソッドは、ビヘイビアの [コンフィギュレーション](concept-configurations.md) のリストを返さなければなりません。
+各ビヘイビアのコンフィギュレーションは、ビヘイビアのクラス名でも、コンフィギュレーション配列でもかまいません。
 
 ```php
 namespace app\models;
@@ -116,20 +117,20 @@ class User extends ActiveRecord
     public function behaviors()
     {
         return [
-            // anonymous behavior, behavior class name only
+            // 無名ビヘイビア ビヘイビアクラス名のみ
             MyBehavior::className(),
 
-            // named behavior, behavior class name only
+            // 名前付きビヘイビア ビヘイビアクラス名のみ
             'myBehavior2' => MyBehavior::className(),
 
-            // anonymous behavior, configuration array
+            // 無名ビヘイビア コンフィギュレーション配列
             [
                 'class' => MyBehavior::className(),
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ],
 
-            // named behavior, configuration array
+            // 名前付きビヘイビア コンフィギュレーション配列
             'myBehavior4' => [
                 'class' => MyBehavior::className(),
                 'prop1' => 'value1',
@@ -140,39 +141,38 @@ class User extends ActiveRecord
 }
 ```
 
-You may associate a name with a behavior by specifying the array key corresponding to the behavior configuration. In this case, the behavior is called a *named behavior*. In the above example, there are two named behaviors:
-`myBehavior2` and `myBehavior4`. If a behavior is not associated with a name, it is called an *anonymous behavior*.
+ビヘイビア構成に対応する配列のキーを指定することによって、ビヘイビアに名前を関連付けることができます。この場合、ビヘイビアは *名前付きビヘイビア* と呼ばれます。上の例では、2つの名前付きビヘイビア​​
+`myBehavior2` と `myBehavior4` があります。ビヘイビアが名前と関連付けられていない場合は、 *無名ビヘイビア* と呼ばれます。
 
 
-To attach a behavior dynamically, call the [[yii\base\Component::attachBehavior()]] method of the component to which the behavior is being attached:
+ビヘイビアを動的にアタッチするには、ビヘイビアをアタッチしようとしているコンポーネントの [[yii\base\Component::attachBehavior()]] メソッドを呼びます:
 
 ```php
 use app\components\MyBehavior;
 
-// attach a behavior object
+// ビヘイビアオブジェクトをアタッチ
 $component->attachBehavior('myBehavior1', new MyBehavior);
 
-// attach a behavior class
+// ビヘイビアクラスをアタッチ
 $component->attachBehavior('myBehavior2', MyBehavior::className());
 
-// attach a configuration array
+// コンフィギュレーション配列をアタッチ
 $component->attachBehavior('myBehavior3', [
     'class' => MyBehavior::className(),
     'prop1' => 'value1',
     'prop2' => 'value2',
 ]);
 ```
-
-You may attach multiple behaviors at once using the [[yii\base\Component::attachBehaviors()]] method:
+[[yii\base\Component::attachBehaviors()]] メソッドを使うと、いちどに複数のビヘイビアをアタッチできます:
 
 ```php
 $component->attachBehaviors([
-    'myBehavior1' => new MyBehavior,  // a named behavior
-    MyBehavior::className(),          // an anonymous behavior
+    'myBehavior1' => new MyBehavior,  // 名前付きビヘイビア
+    MyBehavior::className(),          // 無名ビヘイビア
 ]);
 ```
 
-You may also attach behaviors through [configurations](concept-configurations.md) like the following: 
+次のように、 [コンフィギュレーション](concept-configurations.md) を通じてビヘイビアをアタッチすることもできます:
 
 ```php
 [
@@ -186,73 +186,72 @@ You may also attach behaviors through [configurations](concept-configurations.md
 ]
 ```
 
-For more details,
-please refer to the [Configurations](concept-configurations.md#configuration-format) section.
+詳しくは [コンフィギュレーション](concept-configurations.md#configuration-format) セクションを参照してください。
 
-Using Behaviors <a name="using-behaviors"></a>
+ビヘイビアの使用 <a name="using-behaviors"></a>
 ---------------
 
-To use a behavior, first attach it to a [[yii\base\Component|component]] per the instructions above. Once a behavior is attached to a component, its usage is straightforward.
+ビヘイビアを使用するには、まず上記の方法に従って [[yii\base\Component|コンポーネント]] にアタッチします。ビヘイビアがコンポーネントにアタッチされれば、その使用方法はシンプルです。
 
-You can access a *public* member variable or a [property](concept-properties.md) defined by a getter and/or a setter
-of the behavior through the component it is attached to:
+あなたは、アタッチされているコンポーネントを介して、ビヘイビアの *パブリック* メンバ変数、または getter や setter によって定義されたプロパティにアクセスすることができます:
 
 ```php
-// "prop1" is a property defined in the behavior class
+// "prop1" はビヘイビアクラス内で定義されたプロパティ
 echo $component->prop1;
 $component->prop1 = $value;
 ```
 
-You can also call a *public* method of the behavior similarly:
-
+また同様に、ビヘイビアの *パブリック* メソッドも呼ぶことができます:
+s
 ```php
-// foo() is a public method defined in the behavior class
+// foo() はビヘイビアクラス内で定義されたパブリックメソッド
 $component->foo();
 ```
 
-As you can see, although `$component` does not define `prop1` and `foo()`, they can be used as if they are part
-of the component definition due to the attached behavior.
+ご覧のように、 `$component` は `prop1` と `foo()` を定義していないにもかかわらず、
+アタッチされたビヘイビアによって、それらをコンポーネント定義の一部であるかのように使うことができるのです。
 
-If two behaviors define the same property or method and they are both attached to the same component,
-the behavior that is attached to the component *first* will take precedence when the property or method is accessed.
+もし2つのビヘイビアが同じプロパティやメソッドを定義し、かつ両方とも同じコンポーネントにアタッチされている場合は、
+プロパティやメソッドのアクセス時に、*最初に* コンポーネントにアタッチされたビヘイビアが優先されます。
 
-A behavior may be associated with a name when it is attached to a component. If this is the case, you may
-access the behavior object using the name:
+ビヘイビアはコンポーネントにアタッチされるとき、名前と関連付けられているかもしれません。その場合、
+その名前を使用してビヘイビアオブジェクトにアクセスすることができます:
 
 ```php
 $behavior = $component->getBehavior('myBehavior');
 ```
 
-You may also get all behaviors attached to a component:
+また、コンポーネントにアタッチされた全てのビヘイビアを取得することもできます:
 
 ```php
 $behaviors = $component->getBehaviors();
 ```
 
 
-Detaching Behaviors <a name="detaching-behaviors"></a>
+ビヘイビアのデタッチ <a name="detaching-behaviors"></a>
 -------------------
 
-To detach a behavior, call [[yii\base\Component::detachBehavior()]] with the name associated with the behavior:
+ビヘイビアをデタッチするには、ビヘイビアに付けられた名前とともに [[yii\base\Component::detachBehavior()]] を呼び出します:
 
 ```php
 $component->detachBehavior('myBehavior1');
 ```
 
-You may also detach *all* behaviors:
+*全ての* ビヘイビアをデタッチすることもできます:
 
 ```php
 $component->detachBehaviors();
 ```
 
 
-Using `TimestampBehavior` <a name="using-timestamp-behavior"></a>
+`TimestampBehavior` の利用 <a name="using-timestamp-behavior"></a>
 -------------------------
 
-To wrap up, let's take a look at [[yii\behaviors\TimestampBehavior]]. This behavior  supports automatically
-updating the timestamp attributes of an [[yii\db\ActiveRecord|Active Record]] model anytime the model is saved (e.g., on insert or update).
+しめくくりに、[[yii\behaviors\TimestampBehavior]] を見てみましょう。このビヘイビアは、
+保存時 (つまり挿入や更新) に、[[yii\db\ActiveRecord|アクティブレコード]] モデルの
+タイムスタンプ属性の自動更新をサポートします。
 
-First, attach this behavior to the [[yii\db\ActiveRecord|Active Record]] class that you plan to use:
+まず、使用しようと考えている [[yii\db\ActiveRecord|アクティブレコード]] クラスに、このビヘイビアをアタッチします:
 
 ```php
 namespace app\models\User;
@@ -279,31 +278,29 @@ class User extends ActiveRecord
 }
 ```
 
-The behavior configuration above specifies that when the record is being:
+上のビヘイビアコンフィギュレーションは、レコードが:
 
-* inserted, the behavior should assign the current timestamp to
-  the `created_at` and `updated_at` attributes
-* updated, the behavior should assign the current timestamp to the `updated_at` attribute
+* 挿入されるとき、ビヘイビアは現在のタイムスタンプを `created_at` と `updated_at` 属性に割り当てます
+* 更新されるとき、ビヘイビアは現在のタイムスタンプを `updated_at` 属性に割り当てます
 
-With that code in place, if you have a `User` object and try to save it, you will find its `created_at` and `updated_at` are automatically
-filled with the current timestamp:
+所定の位置にそのコードを使用すると、もし `User` オブジェクトを設け、それを保存しようとしたら、そこで、
+`created_at` と `updated_at` が自動的に現在のタイムスタンプで埋められます。
 
 ```php
 $user = new User;
 $user->email = 'test@example.com';
 $user->save();
-echo $user->created_at;  // shows the current timestamp
+echo $user->created_at;  // 現在のタイムスタンプが表示される
 ```
 
-The [[yii\behaviors\TimestampBehavior|TimestampBehavior]] also offers a useful method
-[[yii\behaviors\TimestampBehavior::touch()|touch()]], which will assign the current timestamp
-to a specified attribute and save it to the database:
+[[yii\behaviors\TimestampBehavior|TimestampBehavior]] は、指定された属性に現在のタイムスタンプを割り当てて
+それをデータベースに保存する、便利なメソッド [[yii\behaviors\TimestampBehavior::touch()|touch()]] を提供します。
 
 ```php
 $user->touch('login_time');
 ```
 
-Comparing Behaviors with Traits <a name="comparison-with-traits"></a>
+ビヘイビアとトレイトの比較 <a name="comparison-with-traits"></a>
 ----------------------
 
 While behaviors are similar to [traits](http://www.php.net/traits) in that they both "inject" their
