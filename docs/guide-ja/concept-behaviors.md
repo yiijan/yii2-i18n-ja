@@ -303,31 +303,30 @@ $user->touch('login_time');
 ビヘイビアとトレイトの比較 <a name="comparison-with-traits"></a>
 ----------------------
 
-While behaviors are similar to [traits](http://www.php.net/traits) in that they both "inject" their
-properties and methods to the primary class, they differ in many aspects. As explained below, they
-both have pros and cons. They are more like complements to each other rather than alternatives.
+ビヘイビアは、主となるクラスにそのプロパティやメソッドを「注入する」という点で [トレイト](http://www.php.net/traits)
+に似ていますが、これらは多くの面で異なります。以下に説明するように、それらは互いに長所と短所を持っています。
+それらは代替手段というよりも、むしろ相互補完関係のようなものです。
 
 
-### Reasons to Use Behaviors <a name="pros-for-behaviors"></a>
+### ビヘイビアを使う理由 <a name="pros-for-behaviors"></a>
 
-Behavior classes, like normal classes, support inheritance. Traits, on the other hand,
-can be considered as language-supported copy and paste. They do not support inheritance.
+ビヘイビアは通常のクラスのように、継承をサポートしています。いっぽうトレイトは、
+言語サポートされたコピー&ペーストとみなすことができます。トレイトは継承をサポートしません。
 
-Behaviors can be attached and detached to a component dynamically without requiring modification of the component class. To use a trait, you must modify the class using it.
+ビヘイビアは、コンポーネントクラスの変更を必要とせずに、動的なコンポーネントへのアタッチとデタッチが可能です。トレイトを使用するには、クラスをトレイトを使って書き換える必要があります。
 
-Behaviors are configurable while traits are not.
+ビヘイビアはコンフィグ可能ですがトレイトは不可能です。
 
-Behaviors can customize the code execution of a component by responding to its events.
+ビヘイビアは、イベントに応答することで、コンポーネントのコード実行をカスタマイズできます。
 
-When there can be name conflicts among different behaviors attached to the same component, the conflicts are
-automatically resolved by prioritizing the behavior attached to the component first.
-Name conflicts caused by different traits requires manually resolution by renaming the affected
-properties or methods.
+同じコンポーネントにアタッチされた異なるビヘイビア間で名前の競合がある場合、その競合は、
+先にコンポーネントにアタッチされたものを優先することによって、自動的に解消されます。
+別のトレイトが起こした名前競合の場合、影響を受けるプロパティやメソッドの名前を手動で変更する必要があります。
 
 
-### Reasons to Use Traits <a name="pros-for-traits"></a>
+### トレイトを使う理由 <a name="pros-for-traits"></a>
 
-Traits are much more efficient than behaviors as behaviors are objects that take both time and memory.
+ビヘイビアは時間もメモリも食うオブジェクトなので、トレイトはビヘイビアよりはるかに効率的です。
 
-IDEs are more friendly to traits as they are language construct.
+トレイトは言語構造であるため、IDEとの相性に優れています。
 
