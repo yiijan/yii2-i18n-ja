@@ -1,12 +1,11 @@
-Configurations
+コンフィギュレーション
 ==============
 
-Configurations are widely used in Yii when creating new objects or initializing existing objects. Configurations usually include the class name of the object being created, and a list of initial values
-that should be assigned to the object's [properties](concept-properties.md). Configurations may also include a list of
-handlers that should be attached to the object's [events](concept-events.md) and/or a list of
-[behaviors](concept-behaviors.md) that should also be attached to the object.
+新しいオブジェクトを作成したり、既存のオブジェクトを初期化するとき、Yiiではコンフィギュレーションが広く使用されています。コンフィギュレーションは通常、作成されるオブジェクトのクラス名、およびオブジェクトの [プロパティ](concept-properties.md)
+に割り当てられる初期値のリストを含みます。コンフィギュレーションは、オブジェクトの [イベント](concept-events.md) にアタッチされるハンドラのリストや、オブジェクトにアタッチさる
+[ビヘイビア](concept-behaviors.md) のリストを含むこともできます。
 
-In the following, a configuration is used to create and initialize a database connection:
+以下では、データベース接続を作成して初期化するために、コンフィギュレーションが使用されています:
 
 ```php
 $config = [
