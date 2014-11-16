@@ -1,41 +1,40 @@
-Aliases
+エイリアス
 =======
 
-Aliases are used to represent file paths or URLs so that you don't have to hard-code absolute paths or URLs in your project. An alias must start with the `@` character to be differentiated from normal file paths and URLs. Yii has many pre-defined aliases already available. 
-For example, the alias `@yii` represents the installation path of the Yii framework; `@web` represents
-the base URL for the currently running Web application.
+ファイルパスや URL を表すのにエイリアスを使用すると、あなたはプロジェクト内で絶対パスや URL をハードコードする必要がなくなります。エイリアスは、通常のファイルパスや URL とは区別するために、 `@` 文字で始まる必要があります。Yii はすでに利用可能な多くの事前定義エイリアスを持っています。
+たとえば、 `@yii` というエイリアスは Yii フレームワークのインストールパスを表し、 `@web` は現在実行中の Web アプリケーションのベース URL を表します。
 
 
-Defining Aliases <a name="defining-aliases"></a>
+エイリアスの定義 <a name="defining-aliases"></a>
 ----------------
 
-You can define an alias for a file path or URL by calling [[Yii::setAlias()]]:
+[[Yii::setAlias()]] を呼び出すことにより、ファイルパスまたは URL のエイリアスを定義することができます。
 
 ```php
-// an alias of a file path
+// ファイルパスのエイリアス
 Yii::setAlias('@foo', '/path/to/foo');
 
-// an alias of a URL
+// URL のエイリアス
 Yii::setAlias('@bar', 'http://www.example.com');
 ```
 
-> Note: The file path or URL being aliased may *not* necessarily refer to an existing file or resource.
+> 補足: エイリアスされているファイルパスやURLは、必ずしも既存のファイルまたはリソースを参照しない場合があります。
 
-Given a defined alias, you may derive a new alias (without the need of calling [[Yii::setAlias()]]) by appending
-a slash `/` followed with one or more path segments. The aliases defined via [[Yii::setAlias()]] becomes the 
-*root alias*, while aliases derived from it are *derived aliases*. For example, `@foo` is a root alias,
-while `@foo/bar/file.php` is a derived alias.
+定義済みのエイリアスがあれば、スラッシュ `/` に続けて1つ以上のパスセグメントを追加することで（[[Yii::setAlias()]]
+の呼び出しを必要とせずに) 新しいエイリアスを導出することができます。 [[Yii::setAlias()]] を通じて定義されたエイリアスは
+*ルートエイリアス* となり、それから派生したエイリアスは *派生エイリアス* になります。たとえば、 `@foo` がルートエイリアスなら、
+`@foo/bar/file.php` は派生エイリアスです。
 
-You can define an alias using another alias (either root or derived):
+エイリアスを、他のエイリアス (ルートまたは派生のいずれか) を使用して定義することができます:
 
 ```php
 Yii::setAlias('@foobar', '@foo/bar');
 ```
 
-Root aliases are usually defined during the [bootstrapping](runtime-bootstrapping.md) stage.
-For example, you may call [[Yii::setAlias()]] in the [entry script](structure-entry-scripts.md).
-For convenience, [Application](structure-applications.md) provides a writable property named `aliases`
-that you can configure in the application [configuration](concept-configurations.md):
+ルートエイリアスは通常、 [ブートストラップ](runtime-bootstrapping.md) 段階で定義されます。
+たとえば、[エントリスクリプト](structure-entry-scripts.md) で [[Yii::setAlias()]] を呼び出すことができます。
+便宜上、 [アプリケーション](structure-applications.md) は、`aliases` という名前の書き込み可能なプロパティを提供しており、
+それをアプリケーション [コンフィギュレーション](concept-configurations.md) で設定することが可能です。
 
 ```php
 return [
@@ -48,7 +47,7 @@ return [
 ```
 
 
-Resolving Aliases <a name="resolving-aliases"></a>
+エイリアスの解決 <a name="resolving-aliases"></a>
 -----------------
 
 You can call [[Yii::getAlias()]] to resolve a root alias into the file path or URL it represents.
