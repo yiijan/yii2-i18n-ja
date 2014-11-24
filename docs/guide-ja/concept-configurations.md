@@ -81,7 +81,7 @@ Yii::configure($object, $config);
 
 ### アプリケーションの構成 <a name="application-configurations"></a>
 
-[アプリケーション](structure-applications.md) の構成は、おそらく最も複雑なコンフィギュレーションのひとつです。
+[アプリケーション](structure-applications.md) の構成は、おそらく Yii の中で最も複雑な配列のひとつです。
 それは [[yii\web\Application|application]] クラスが、設定可能なプロパティとイベントを数多く持つためです。
 さらに重要なことは、その [[yii\web\Application::components|components]] プロパティが、アプリケーションに登録されている
 コンポーネント生成用のコンフィギュレーション配列を受け取ることができることです。以下は、 [basic application template](start-basic.md)
