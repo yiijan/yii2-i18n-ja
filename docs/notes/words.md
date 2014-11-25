@@ -11,13 +11,18 @@
 
 | 英語  | 日本語 | 別の日本語 | 状態 | 詳細 |
 |:------|:-------|:-----------|:----:|:-----------|
+| attach | アタッチする | 付ける、取り付ける | N1 | 主として、イベントハンドラやビヘイビアについて |
 | best practice | 最善の慣行 | ベストプラクティス | N1 | Yii 1 ではカタカナにした |
-| business | 業務 | ビジネス | N2 | business rule は「ビジネスルール」[business の訳語 #8](https://github.com/yiijan/yii2-i18n-ja/issues/8)|
+| business | 業務 | ビジネス | N2 | business rule は「ビジネスルール」 [business の訳語 #8](https://github.com/yiijan/yii2-i18n-ja/issues/8)|
 | configuration | コンフィギュレーション | 設定, 構成 | N3 | [Configの訳語 #4](https://github.com/yiijan/yii2-i18n-ja/issues/4) |
 | configure | 構成する | 設定する | N3 | [Configの訳語 #4](https://github.com/yiijan/yii2-i18n-ja/issues/4) |
 | current | 現在の | カレント～ | N1 | どっちでも良いかな |
+| definitive | 決定版(の) | 公式(の) | N2 | 表題 "The Deffinitive Guide to Yii 2.0" の訳語として |
+| detach | デタッチする | 取り外す | N1 | 主として、イベントハンドラやビヘイビアについて |
 | default | デフォルト | 既定、既定の～ | N1 | どっちでも良いかな |
 | dispatch | 送付する | 送出する、ディスパッチする | N1 | |
+| documentation | ドキュメント | ドキュメンテーション | N1 | 動詞 としての document は、「ドキュメントを付ける」。動詞 document から派生した名詞 documentation は、「ドキュメントを付ける行為」または「ドキュメントを付ける行為によって生じたもの」。だから、もう、「ドキュメント」で良えやん、その方が短いし、と。 |
+| issue | 問題 | 課題 | N1 | github 上などの issue tracking に関する場合は「課題」|
 | massive assignment | 一括代入 | ? | N1 | |
 | populate | 投入する | 代入する、割り当てる、入れる | N2 | |
 | postfix | 接尾辞 | ポストフィックス | N1 | どっちでも良いかな |
