@@ -20,6 +20,7 @@
 | definitive | 決定版(の) | 公式(の) | N2 | 表題 "The Deffinitive Guide to Yii 2.0" の訳語として |
 | detach | デタッチする | 取り外す | N1 | 主として、イベントハンドラやビヘイビアについて |
 | default | デフォルト | 既定、既定の～ | N1 | どっちでも良いかな |
+| dependency injection | 依存注入 | | N1 | 依存している「こと」ではなく依存している「もの」 |
 | dispatch | 送付する | 送出する、ディスパッチする | N1 | |
 | documentation | ドキュメント | ドキュメンテーション | N1 | [詳細](#documentation) |
 | issue | 問題 | 課題 | N1 | github 上などの issue tracking に関する場合は「課題」|
