@@ -524,7 +524,7 @@ Yii 2 の URL 管理は 1.1 のそれと似たようなものです。
 ]
 ```
 
-更なる詳細については [URL 管理](runtime-url-handling.md) の節を参照してください。
+詳細については [URL マネージャの説明](runtime-routing.md) の節を参照してください。
 
 
 Yii 1.1 と 2.x を一緒に使う
