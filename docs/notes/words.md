@@ -14,12 +14,13 @@
 | attach | アタッチする | 付ける、取り付ける | N1 | 主として、イベントハンドラやビヘイビアについて |
 | best practice | 最善の慣行 | ベストプラクティス | N1 | Yii 1 ではカタカナにした |
 | business | 業務 | ビジネス | N2 | business rule は「ビジネスルール」 [business の訳語 #8](https://github.com/yiijan/yii2-i18n-ja/issues/8)|
-| configuration | コンフィギュレーション | 設定, 構成 | N3 | [Configの訳語 #4](https://github.com/yiijan/yii2-i18n-ja/issues/4) |
+| configuration | 設定情報 | (初期)設定, 構成, コンフィギュレーション | N3 | [Configの訳語 #4](https://github.com/yiijan/yii2-i18n-ja/issues/4) |
 | configure | 構成する | 設定する | N3 | [Configの訳語 #4](https://github.com/yiijan/yii2-i18n-ja/issues/4) |
 | current | 現在の | カレント～ | N1 | どっちでも良いかな |
 | definitive | 決定版(の) | 公式(の) | N2 | 表題 "The Deffinitive Guide to Yii 2.0" の訳語として |
 | detach | デタッチする | 取り外す | N1 | 主として、イベントハンドラやビヘイビアについて |
 | default | デフォルト | 既定、既定の～ | N1 | どっちでも良いかな |
+| dependency injection | 依存注入 | | N1 | 依存している「こと」ではなく依存している「もの」 |
 | dispatch | 送付する | 送出する、ディスパッチする | N1 | |
 | documentation | ドキュメント | ドキュメンテーション | N1 | [詳細](#documentation) |
 | issue | 問題 | 課題 | N1 | github 上などの issue tracking に関する場合は「課題」|
