@@ -21,7 +21,7 @@ $db = Yii::createObject($config);
 [[Yiiの::CreateObject()]] メソッドは引数にコンフィギュレーション配列を受け取り、コンフィギュレーションで名前指定されたクラスをインスタンス化してオブジェクトを作成します。オブジェクトがインスタンス化されるとき、その他の設定は、
 オブジェクトのプロパティ、イベントハンドラ、およびビヘイビアを初期化するのに使われます。
 
-すでにオブジェクトがある場合は、[[Yiiの::のconfigure()]] を使ってコンフィギュレーション配列でオブジェクトのプロパティを初期化するために使用することができます:
+すでにオブジェクトがある場合は、コンフィギュレーション配列でオブジェクトのプロパティを初期化するのに [[Yii::configure()]] を使用することができます:
 
 ```php
 Yii::configure($object, $config);
@@ -32,7 +32,7 @@ Yii::configure($object, $config);
 
 ## コンフィギュレーションの形式 <a name="configuration-format"></a>
 
-コンフィギュレーションの書式は、このように形式的に記述することができます:
+コンフィギュレーションの形式は、フォーマルには次のように説明できます:
 
 ```php
 [
@@ -81,7 +81,7 @@ Yii::configure($object, $config);
 
 ### アプリケーションの構成 <a name="application-configurations"></a>
 
-[アプリケーション](structure-applications.md) の構成は、おそらく最も複雑なコンフィギュレーションのひとつです。
+[アプリケーション](structure-applications.md) の構成は、おそらく Yii の中で最も複雑な配列のひとつです。
 それは [[yii\web\Application|application]] クラスが、設定可能なプロパティとイベントを数多く持つためです。
 さらに重要なことは、その [[yii\web\Application::components|components]] プロパティが、アプリケーションに登録されている
 コンポーネント生成用のコンフィギュレーション配列を受け取ることができることです。以下は、 [basic application template](start-basic.md)
@@ -167,11 +167,8 @@ return [
     'components' => require(__DIR__ . '/components.php'),
 ];
 ```
-`components` の構成が複雑すぎるため、 `components.php` と呼ばれる別のファイルにそれを格納し、上記のように `web.php` でこのファイルを "require" しています。
-`components.php` の内容は、次のようになっています。
-
-Because the `components` configuration is complex too, you store it in a separate file called `components.php`
-and "require" this file in `web.php` as shown above. The content of `components.php` is as follows,
+`components` の構成もまた複雑になるため、上記のように、 `components.php` と呼ぶ別のファイルにそれを格納し `web.php` でそのファイルを "require" しています。
+この `components.php` の内容は、次のようになっています。
 
 ```php
 return [

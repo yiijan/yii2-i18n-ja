@@ -40,7 +40,7 @@ the installed application. You only need to do these once for all.
     Otherwise, in production execute `init` in non-interactive mode.
 
     ```
-    php /path/to/yii-application/init --env=Production overwrite=All
+    php /path/to/yii-application/init --env=Production --overwrite=All
     ```
 
 2. Create a new database and adjust the `components.db` configuration in `common/config/main-local.php` accordingly.
@@ -159,7 +159,7 @@ directory:
 {
     "name": "yiisoft/yii2-app-advanced",
     "description": "Yii 2 Advanced Application Template",
-    "keywords": ["yii", "framework", "advanced", "application template"],
+    "keywords": ["yii2", "framework", "advanced", "application template"],
     "homepage": "http://www.yiiframework.com/",
     "type": "project",
     "license": "BSD-3-Clause",
@@ -174,27 +174,23 @@ directory:
     "require": {
         "php": ">=5.4.0",
         "yiisoft/yii2": "*",
-        "yiisoft/yii2-swiftmailer": "*",
         "yiisoft/yii2-bootstrap": "*",
-        "yiisoft/yii2-debug": "*",
-        "yiisoft/yii2-gii": "*"
+        "yiisoft/yii2-swiftmailer": "*"
     },
-    "scripts": {
-        "post-create-project-cmd": [
-            "yii\\composer\\Installer::setPermission"
-        ]
+    "require-dev": {
+        "yiisoft/yii2-codeception": "*",
+        "yiisoft/yii2-debug": "*",
+        "yiisoft/yii2-gii": "*",
+        "yiisoft/yii2-faker": "*"
+    },
+    "config": {
+        "process-timeout": 1800
     },
     "extra": {
-        "writable": [
-            "backend/runtime",
-            "backend/web/assets",
-
-            "console/runtime",
-            "console/migrations",
-
-            "frontend/runtime",
-            "frontend/web/assets"
-        ]
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
     }
 }
 ```

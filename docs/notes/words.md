@@ -11,13 +11,19 @@
 
 | 英語  | 日本語 | 別の日本語 | 状態 | 詳細 |
 |:------|:-------|:-----------|:----:|:-----------|
+| attach | アタッチする | 付ける、取り付ける | N1 | 主として、イベントハンドラやビヘイビアについて |
 | best practice | 最善の慣行 | ベストプラクティス | N1 | Yii 1 ではカタカナにした |
-| business | 業務 | ビジネス | N2 | business rule は「ビジネスルール」[business の訳語 #8](https://github.com/yiijan/yii2-i18n-ja/issues/8)|
-| configuration | コンフィギュレーション | 設定, 構成 | N3 | [Configの訳語 #4](https://github.com/yiijan/yii2-i18n-ja/issues/4) |
+| business | 業務 | ビジネス | N2 | business rule は「ビジネスルール」 [business の訳語 #8](https://github.com/yiijan/yii2-i18n-ja/issues/8)|
+| configuration | 構成情報 | 構成, 設定, コンフィギュレーション | N3 | [Configの訳語 #4](https://github.com/yiijan/yii2-i18n-ja/issues/4) |
 | configure | 構成する | 設定する | N3 | [Configの訳語 #4](https://github.com/yiijan/yii2-i18n-ja/issues/4) |
 | current | 現在の | カレント～ | N1 | どっちでも良いかな |
+| definitive | 決定版(の) | 公式(の) | N2 | 表題 "The Deffinitive Guide to Yii 2.0" の訳語として |
+| detach | デタッチする | 取り外す | N1 | 主として、イベントハンドラやビヘイビアについて |
 | default | デフォルト | 既定、既定の～ | N1 | どっちでも良いかな |
+| dependency injection | 依存注入 | | N1 | 依存している「こと」ではなく依存している「もの」 |
 | dispatch | 送付する | 送出する、ディスパッチする | N1 | |
+| documentation | ドキュメント | ドキュメンテーション | N1 | [詳細](#documentation) |
+| issue | 問題 | 課題 | N1 | github 上などの issue tracking に関する場合は「課題」|
 | massive assignment | 一括代入 | ? | N1 | |
 | populate | 投入する | 代入する、割り当てる、入れる | N2 | |
 | postfix | 接尾辞 | ポストフィックス | N1 | どっちでも良いかな |
@@ -29,6 +35,18 @@
 | validation | 検証 | バリデーション | N1 | validator との整合性が気になる |
 | validator | バリデータ | ? | N1 | カタカナ以外に訳語を思いつかない |
 
+
+詳細
+----
+
+### documentation <a name="documentation"></a> ###
+
+動詞 としての document は、「ドキュメントを付ける」。
+動詞 document から派生した名詞 documentation は、「ドキュメントを付ける行為」または「ドキュメントを付ける行為によって生じたもの」。
+だから、もう、「ドキュメント」で良えやん、その方が短いし、と。
+
+こういう「名詞から派生した動詞から更に名詞化した単語」を元の名詞として翻訳している例は、他にもいくつかある。
+理由は、そっちの方が短いから、ということと、日本語としてはそっちの方が広まっているから、というもの。
 
 凡例
 ----
