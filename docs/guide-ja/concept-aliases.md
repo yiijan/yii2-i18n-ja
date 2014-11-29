@@ -50,42 +50,39 @@ return [
 エイリアスの解決 <a name="resolving-aliases"></a>
 -----------------
 
-You can call [[Yii::getAlias()]] to resolve a root alias into the file path or URL it represents.
-The same method can also resolve a derived alias into the corresponding file path or URL:
+[[Yii::getAlias()]] を呼び出して、ルートエイリアスが表すファイルパスまたはURLを解決することができます。
+同メソッドで、対応するファイルパスまたはURLに派生するエイリアスを解決することもできます。
 
 ```php
-echo Yii::getAlias('@foo');               // displays: /path/to/foo
-echo Yii::getAlias('@bar');               // displays: http://www.example.com
-echo Yii::getAlias('@foo/bar/file.php');  // displays: /path/to/foo/bar/file.php
+echo Yii::getAlias('@foo');               // /path/to/foo を表示
+echo Yii::getAlias('@bar');               // http://www.example.com を表示
+echo Yii::getAlias('@foo/bar/file.php');  // /path/to/foo/bar/file.php を表示
 ```
 
-The path/URL represented by a derived alias is determined by replacing the root alias part with its corresponding
-path/URL in the derived alias.
+派生エイリアスによって表されるパスやURLは、派生エイリアス内のルートエイリアス部分を、対応するパス/URL
+で置換して決定されます。
 
-> Note: The [[Yii::getAlias()]] method does not check whether the resulting path/URL refers to an existing file or resource.
+> 補足: [[Yii::getAlias()]] メソッドは、 結果のパスやURLが実在するファイルやリソースを参照しているかをチェックしません。
 
-
-A root alias may also contain slash `/` characters. The [[Yii::getAlias()]] method
-is intelligent enough to tell which part of an alias is a root alias and thus correctly determines
-the corresponding file path or URL:
+ルートエイリアス名にはスラッシュ `/` 文字を含むことができます。 [[Yii::getAlias()]] メソッドは、
+エイリアスのどの部分がルートエイリアスであるかを賢く判別し、正確に対応するファイルパスやURLを決定します:
 
 ```php
 Yii::setAlias('@foo', '/path/to/foo');
 Yii::setAlias('@foo/bar', '/path2/bar');
-Yii::getAlias('@foo/test/file.php');  // displays: /path/to/foo/test/file.php
-Yii::getAlias('@foo/bar/file.php');   // displays: /path2/bar/file.php
+Yii::getAlias('@foo/test/file.php');  // /path/to/foo/test/file.php を表示
+Yii::getAlias('@foo/bar/file.php');   // /path2/bar/file.php を表示
 ```
 
-If `@foo/bar` is not defined as a root alias, the last statement would display `/path/to/foo/bar/file.php`.
+もし `@foo/bar` がルートエイリアスとして定義されていなければ、最後のステートメントは `/path/to/foo/bar/file.php` を表示します。
 
 
-Using Aliases <a name="using-aliases"></a>
+エイリアスの使用 <a name="using-aliases"></a>
 -------------
 
-Aliases are recognized in many places in Yii without needing to call [[Yii::getAlias()]] to convert
-them into paths or URLs. For example, [[yii\caching\FileCache::cachePath]] can accept both a file path
-and an alias representing a file path, thanks to the `@` prefix which allows it to differentiate a file path
-from an alias.
+エイリアスは、それをパスやURLに変換するための [[Yii::getAlias()​]] の呼び出しがなくても、Yiiの多くの場所でみられます。
+たとえば、 [[yii\caching\FileCache::cachePath]] ファイルパスとファイルパスを表すエイリアスの両方を受け入れることができ、
+`@` プレフィックスによって、エイリアスとファイルパスを区別することができます。
 
 ```php
 use yii\caching\FileCache;
@@ -95,36 +92,45 @@ $cache = new FileCache([
 ]);
 ```
 
-Please pay attention to the API documentation to see if a property or method parameter supports aliases.
+プロパティやメソッドのパラメータがエイリアスをサポートしているかどうか、APIドキュメントに注意を払ってください。
 
 
-Predefined Aliases <a name="predefined-aliases"></a>
+事前定義されたエイリアス <a name="predefined-aliases"></a>
 ------------------
 
-Yii predefines a set of aliases to easily reference commonly used file paths and URLs:
+Yii では、一般的に使用されるフ​​ァイルのパスとURLを簡単に参照できるよう、エイリアスのセットが事前に定義されています:
 
-- `@yii`, the directory where the `BaseYii.php` file is located (also called the framework directory)
-- `@app`, the [[yii\base\Application::basePath|base path]] of the currently running application
-- `@runtime`, the [[yii\base\Application::runtimePath|runtime path]] of the currently running application. Defaults to `@app/runtime`.
-- `@webroot`, the Web root directory of the currently running Web application. It is determined based on the directory
-  containing the entry script.
-- `@web`, the base URL of the currently running Web application. It has the same value as [[yii\web\Request::baseUrl]].
-- `@vendor`, the [[yii\base\Application::vendorPath|Composer vendor directory]]. Defaults to `@app/vendor`.
-- `@bower`, the root directory that contains [bower packages](http://bower.io/). Defaults to `@vendor/bower`.
-- `@npm`, the root directory that contains [npm packages](https://www.npmjs.org/). Defaults to `@vendor/npm`.
+@yii、BaseYii.phpファイルがあるディレクトリ（またフレームワークディレクトリと呼ばれる）
+@app、[[のYii \ベース\アプリケーション:: basePathを|ベースパス]]現在実行中のアプリケーションの
+@runtime、[[のYii \ベース\アプリケーション:: runtimePath |ランタイム·パス]]現在実行中のアプリケーションの。
+@アプリ/ランタイムデフォルト。
+@webroot、現在実行中のWebアプリケーションのWebルートディレクトリ。これは、エントリスクリプトを含むディレクトリに基づいて決定される。
+@web、現在実行中のWebアプリケーションのベースURL。これは、[[のYii \ウェブ\依頼:: BASEURL]]と同じ値を持っています。
+@vendor、[[のYii \ベース\アプリケーション:: vendorPath |作曲·ベンダーのディレクトリ]]。 @アプリ/ベンダーデフォルト。
+@bower、バウアーのパッケージが含まれているルートディレクトリ。 @ベンダー/バウアーデフォルト。 
+@npm、NPMのパッケージが含まれているルートディレクトリ。ベンダー/ NPM @デフォルト。
 
-The `@yii` alias is defined when you include the `Yii.php` file in your [entry script](structure-entry-scripts.md). The rest of the aliases are defined in the application constructor when applying the application
-[configuration](concept-configurations.md).
+- `@yii`, `BaseYii.php` ファイルがあるディレクトリ (フレームワークディレクトリとも呼ばれます)
+- `@app`, 現在実行中のアプリケーションの [[yii\base\Application::basePath|ベースパス]]
+- `@runtime`, 現在実行中のアプリケーションの [[yii\base\Application::runtimePath|ランタイムパス]] 。デフォルトは `@app/runtime` 。
+- `@webroot`, 現在実行中のWebアプリケーションのWebルートディレクトリ。エントリスクリプトを含むディレクトリをもとに決定されます。
+- `@web`, 現在実行中のWebアプリケーションのベースURL。これは、 [[yii\web\Request::baseUrl]] と同じ値を持ちます。
+- `@vendor`, [[yii\base\Application::vendorPath|Composerのベンダーディレクトリ]] 。デフォルトは `@app/vendor` 。
+- `@bower`, [bower パッケージ](http://bower.io/) が含まれるルートディレクトリ。デフォルトは `@vendor/bower` 。
+- `@npm`, [npm パッケージ](https://www.npmjs.org/) が含まれるルートディレクトリ。デフォルトは `@vendor/npm` 。
 
+`@yii` エイリアスは [エントリスクリプト](structure-entry-scripts.md) に `Yii.php` ファイルを読み込んだ時点で定義されます。
+エイリアスの残りの部分は、アプリケーションのコンストラクタ内で、アプリケーションの [設定情報](concept-configurations.md) を適用するときに定義されます。
 
-Extension Aliases <a name="extension-aliases"></a>
+エクステンションのエイリアス <a name="extension-aliases"></a>
 -----------------
 
-An alias is automatically defined for each [extension](structure-extensions.md) that is installed via Composer.
-Each alias is named after the root namespace of the extension as declared in its `composer.json` file, and each alias
-represents the root directory of the package. For example, if you install the `yiisoft/yii2-jui` extension,
-you will automatically have the alias `@yii/jui` defined during the [bootstrapping](runtime-bootstrapping.md) stage, equivalent to:
+Composer でインストールされる各 [エクステンション](structure-extensions.md) ごとに、エイリアスが自動的に定義されます。
+各エイリアスは、その `composer.json` ファイルで宣言された、エクステンションのルート名前空間にちなんで名付けられており、
+それらは、パ​​ッケージのルートディレクトリを表します。たとえば、あなたが `yiisoft/yii2-jui` エクステンションをインストールしたとすると、
+自動的に `@yii/jui` というエイリアスができ、 [ブートストラップ](runtime-bootstrapping.md) 段階で、次のと同等のものとして定義されます:
 
 ```php
 Yii::setAlias('@yii/jui', 'VendorPath/yiisoft/yii2-jui');
 ```
+
