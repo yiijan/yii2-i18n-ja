@@ -1,92 +1,88 @@
-Class Autoloading
+クラスのオートローディング
 =================
 
-Yii relies on the [class autoloading mechanism](http://www.php.net/manual/en/language.oop5.autoload.php)
-to locate and include all required class files. It provides a high-performance class autoloader that is compliant to the
-[PSR-4 standard](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md).
-The autoloader is installed when you include the `Yii.php` file.
+Yiiは、必要となるすべてのクラスファイルを、特定してインクルードするにあたり、 [クラスのオートローディングメカニズム](http://www.php.net/manual/en/language.oop5.autoload.php)
+を頼りにします。[PSR-4 標準](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md) に準拠した、高性能なクラスのオートローダを提供します。
+このオートローダは、あなたが `Yii.php` ファイルをインクルードするときにインストールされます。
 
-> Note: For simplicity of description, in this section we will only talk about autoloading of classes. However, keep in
-  mind that the content we are describing here applies to autoloading of interfaces and traits as well.
+> 補足: 説明を簡単にするため、このセクションではクラスのオートローディングについてのみお話しします。しかし、
+  ここに記述されている内容は、同様に、インタフェースとトレイトのオートロードにも適用されることに注意してください。
 
 
-Using the Yii Autoloader <a name="using-yii-autoloader"></a>
+Yii オートローダーの使用 <a name="using-yii-autoloader"></a>
 ------------------------
 
-To make use of the Yii class autoloader, you should follow two simple rules when creating and naming your classes:
+Yii のクラスオートローダを使用するには、自分のクラスを作成して名前を付けるとき、次の2つの単純なルールに従わなければなりません:
 
-* Each class must be under a namespace (e.g. `foo\bar\MyClass`)
-* Each class must be saved in an individual file whose path is determined by the following algorithm:
+* 各クラスは名前空間の下になければなりません (例 `foo\bar\MyClass`)
+* 各クラスは次のアルゴリズムで決定される個別のファイルに保存されなければなりません:
 
 ```php
-// $className is a fully qualified class name with the leading backslash
+// $className は先頭にバックスラッシュを持つ完全修飾名
 $classFile = Yii::getAlias('@' . str_replace('\\', '/', $className) . '.php');
 ```
+たとえば、クラス名と名前空間が `foo\bar\MyClass` であれば、対応するクラスファイルのパスの [エイリアス](concept-aliases.md) は、
+`@foo/bar/MyClass.php` になります。このエイリアスがファイルパスになるようにするには、`@foo` または `@foo/bar`
+のどちらかが、 [ルートエイリアス](concept-aliases.md#defining-aliases) でなければなりません。
 
-For example, if a class name and namespace is `foo\bar\MyClass`, the [alias](concept-aliases.md) for the corresponding class file path
-would be `@foo/bar/MyClass.php`. In order for this alias to be resolvable into a file path,
-either `@foo` or `@foo/bar` must be a [root alias](concept-aliases.md#defining-aliases).
+[Basic Application Template](start-basic.md) を使用している場合、最上位の名前空間 `app` の下にクラスを置くことができ、
+そうすると、新しいエイリアスを定義しなくても、Yii によってそれらをオートロードできるようになります。これは `@app`
+が [事前定義されたエイリアス](concept-aliases.md#predefined-aliases) であるためで、`app\components\MyClass` のようなクラス名を
+今説明したアルゴリズムに従って、クラスファイル `AppBasePath/components/MyClass.php` だと解決できるのです。
 
-When using the [Basic Application Template](start-basic.md), you may put your classes under the top-level
-namespace `app` so that they can be autoloaded by Yii without the need of defining a new alias. This is because
-`@app` is a [predefined alias](concept-aliases.md#predefined-aliases), and a class name like `app\components\MyClass`
-can be resolved into the class file `AppBasePath/components/MyClass.php`, according to the algorithm just described.
-
-In the [Advanced Application Template](tutorial-advanced-app.md), each tier has its own root alias. For example,
-the front-end tier has a root alias `@frontend`, while the back-end tier `@backend`. As a result, you may
-put the front-end classes under the namespace `frontend` while the back-end classes are under `backend`. This will
-allow these classes to be autoloaded by the Yii autoloader.
+[Advanced Application Template](tutorial-advanced-app.md) では、各階層にそれ自身のルートエイリアスを持っています。たとえば、
+フロントエンド層はルートエイリアス `@frontend` を持ち、バックエンド層は `@backend` です。その結果、名前空間 `frontend` の下に
+フロントエンドクラスを置き、バックエンドクラスを `backend` の下に置けます。これで、これらのクラスは Yii のオートローダによって
+オートロードできるようになります。
 
 
-Class Map <a name="class-map"></a>
+クラスマップ <a name="class-map"></a>
 ---------
 
-The Yii class autoloader supports the *class map* feature, which maps class names to the corresponding class file paths.
-When the autoloader is loading a class, it will first check if the class is found in the map. If so, the corresponding
-file path will be included directly without further check. This makes class autoloading super fast. In fact,
-all core Yii classes are autoloaded this way.
+Yii のクラスオートローダは、 *クラスマップ* 機能をサポートしており、クラス名を対応するクラスファイルのパスにマップできます。
+オートローダがクラスをロードしているとき、クラスがマップに見つかるかどうかを最初にチェックします。もしあれば、対応する
+ファイルのパスは、それ以上チェックされることなく、直接インクルードされます。これでクラスのオートローディングを非常に高速化できます。
+実際に、すべての Yii のコアクラスは、この方法でオートロードされています。
 
-You may add a class to the class map, stored in `Yii::$classMap`, using:
+次の方法で、 `Yii::$classMap` に格納されるクラスマップにクラスを追加できます:
 
 ```php
 Yii::$classMap['foo\bar\MyClass'] = 'path/to/MyClass.php';
 ```
 
-[Aliases](concept-aliases.md) can be used to specify class file paths. You should set the class map in the
-[bootstrapping](runtime-bootstrapping.md) process so that the map is ready before your classes are used.
+クラスファイルのパスを指定するのに、 [エイリアス](concept-aliases.md) を使うことができます。クラスが使用される前にマップが準備できるように、
+[ブートストラップ](runtime-bootstrapping.md) プロセス内でクラスマップを設定する必要があります。
 
 
-Using Other Autoloaders <a name="using-other-autoloaders"></a>
+他のオートローダーの使用 <a name="using-other-autoloaders"></a>
 -----------------------
 
-Because Yii embraces Composer as a package dependency manager, it is recommended that you also install
-the Composer autoloader. If you are using 3rd-party libraries that have their own autoloaders, you should
-also install those.
+Yii はパッケージ依存関係マネージャとして Composer を包含しているので、Composer のオートローダもインストールすることをお勧めします。
+あなたが独自のオートローダを持つサードパーティライブラリを使用している場合、それらもインストールする必要があります。
 
-When using the Yii autoloader together with other autoloaders, you should include the `Yii.php` file
-*after* all other autoloaders are installed. This will make the Yii autoloader the first one responding to
-any class autoloading request. For example, the following code is extracted from
-the [entry script](structure-entry-scripts.md) of the [Basic Application Template](start-basic.md). The first
-line installs the Composer autoloader, while the second line installs the Yii autoloader:
+Yiiオートローダーを他のオートローダーと一緒に使うときは、他のすべてのオートローダーがインストールされた *後で* 、 `Yii.php`
+ファイルをインクルードする必要があります。これで Yii のオートローダーが、任意クラスのオートローディング要求に応答する最初のものになります。
+たとえば、次のコードは [Basic Application Template](start-basic.md) の [エントリスクリプト](structure-entry-scripts.md) から抜粋したものです。
+最初の行は、Composer のオートローダをインストールしており、二行目は Yii のオートローダをインストールしています。
 
 ```php
 require(__DIR__ . '/../vendor/autoload.php');
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 ```
 
-You may use the Composer autoloader alone without the Yii autoloader. However, by doing so, the performance
-of your class autoloading may be degraded, and you must follow the rules set by Composer in order for your classes
-to be autoloadable.
+あなたは Yii のオートローダーを使わず、Composer のオートローダーだけを単独で使用することもできます。しかし、そうすることによって、
+あなたのクラスのオートローディングのパフォーマンスは低下し、クラスをオートロード可能にするために Composer が設定したルールに従わなければならなくなります。
 
-> Info: If you do not want to use the Yii autoloader, you must create your own version of the `Yii.php` file
-  and include it in your [entry script](structure-entry-scripts.md).
+> Info: Yiiのオートローダを使用したくない場合は、 `Yii.php` ファイルの独自のバージョンを作成し、
+  それを [エントリスクリプト](structure-entry-scripts.md) でインクルードする必要があります。
 
 
-Autoloading Extension Classes <a name="autoloading-extension-classes"></a>
+エクステンションクラスのオートロード <a name="autoloading-extension-classes"></a>
 -----------------------------
 
-The Yii autoloader is capable of autoloading [extension](structure-extensions.md) classes. The sole requirement
-is that an extension specifies the `autoload` section correctly in its `composer.json` file. Please refer to the
-[Composer documentation](https://getcomposer.org/doc/04-schema.md#autoload) for more details about specifying `autoload`.
+Yii のオートローダは、 [エクステンション](structure-extensions.md) クラスのオートロードが可能です。唯一の要件は、
+エクステンションがその `composer.json` ファイルに正しく `autoload` セクションを指定していることです。
+`autoload` 指定方法の詳細については [Composer のドキュメント](https://getcomposer.org/doc/04-schema.md#autoload) 参照してください。
 
-In case you do not use the Yii autoloader, the Composer autoloader can still autoload extension classes for you.
+Yii のオートローダを使用しない場合でも、まだ Composer のオートローダはエクステンションクラスをオートロード可能です。
+
