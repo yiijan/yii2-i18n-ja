@@ -1,21 +1,21 @@
-Service Locator
+サービスロケータ
 ===============
 
-A service locator is an object that knows how to provide all sorts of services (or components) that an application
-might need. Within a service locator, each component exists as only a single instance, uniquely identified by an ID.
-You use the ID to retrieve a component from the service locator.
+サービスロケータは、アプリケーションが必要とする可能性のある各種のサービス (またはコンポーネント) を提供する方法を知っているオブジェクトです。
+サービスロケータ内では、各コンポーネントは単一のインスタンスとして存在し、IDによって一意に識別されます。
+あなたは、このIDを使用してサービスロケータからコンポーネントを取得できます。
 
-In Yii, a service locator is simply an instance of [[yii\di\ServiceLocator]], or from a child class.
+Yii では、サービスロケータは単純に [[yii\di\ServiceLocator]] のインスタンス、または子クラスのインスタンスです。
 
-The most commonly used service locator in Yii is the *application* object, which can be accessed through
-`\Yii::$app`. The services it provides are called *application components*, such as the `request`, `response`, and
-`urlManager` components. You may configure these components, or even replace them with your own implementations, easily
-through functionality provided by the service locator.
+Yii の中で最も一般的に使用されるサービスロケータは、 *アプリケーション* オブジェクトで、 `\Yii::$app`
+を通じてアクセスできます。それが提供するサービスは、 *アプリケーションコンポーネント* と呼ばれ、それは `request` 、
+`response`、 `urlManager` のようなコンポーネントです。あなたはサービスロケータによって提供される機能を通じて、
+簡単に、これらのコンポーネントを構成、あるいは独自の実装に置き換え、といったことができます。
 
-Besides the application object, each module object is also a service locator.
+アプリケーションオブジェクトの他に、各モジュールオブジェクトもまたサービスロケータです。
 
-To use a service locator, the first step is to register components with it. A component can be registered
-via [[yii\di\ServiceLocator::set()]]. The following code shows different ways of registering components:
+サービスロケータを使用する最初のステップは、コンポーネントを登録することです。コンポーネントは、 [[yii\di\ServiceLocator::set()]]
+を通じて登録することができます。次のコードは、コンポーネントを登録するさまざまな方法を示しています。
 
 ```php
 use yii\di\ServiceLocator;
@@ -23,10 +23,10 @@ use yii\caching\FileCache;
 
 $locator = new ServiceLocator;
 
-// register "cache" using a class name that can be used to create a component
+// コンポーネントの作成に使われるクラス名を使用して "cache" を登録
 $locator->set('cache', 'yii\caching\ApcCache');
 
-// register "db" using a configuration array that can be used to create a component
+// コンポーネントの作成に使われる構成情報配列を使用して "db" を登録
 $locator->set('db', [
     'class' => 'yii\db\Connection',
     'dsn' => 'mysql:host=localhost;dbname=demo',
@@ -34,35 +34,34 @@ $locator->set('db', [
     'password' => '',
 ]);
 
-// register "search" using an anonymous function that builds a component
+// コンポーネントを構築する匿名関数を使って "search" を登録
 $locator->set('search', function () {
     return new app\components\SolrService;
 });
 
-// register "pageCache" using a component
+// コンポーネントを使って "pageCache" を登録
 $locator->set('pageCache', new FileCache);
 ```
 
-Once a component has been registered, you can access it using its ID, in one of the two following ways:
+いったんコンポーネントが登録されたら、次の2つの方法のいずれかで、そのIDを使ってそれにアクセスすることができます:
 
 ```php
 $cache = $locator->get('cache');
-// or alternatively
+// または代わりに
 $cache = $locator->cache;
 ```
 
-As shown above, [[yii\di\ServiceLocator]] allows you to access a component like a property using the component ID.
-When you access a component for the first time, [[yii\di\ServiceLocator]] will use the component registration
-information to create a new instance of the component and return it. Later, if the component is accessed again,
-the service locator will return the same instance.
+以上のように、 [[yii\di\ServiceLocator]] はコンポーネントIDを使用したプロパティのように、コンポーネントにアクセスすることができます。
+あなたが最初にコンポーネントにアクセスしたとき、 [[yii\di\ServiceLocator]] はコンポーネントの登録情報を使用してコンポーネントの新しいインスタンスを作成し、
+それを返します。後でそのコンポーネントが再度アクセスされた場合、サービスロケータは同じインスタンスを返します。
 
-You may use [[yii\di\ServiceLocator::has()]] to check if a component ID has already been registered.
-If you call [[yii\di\ServiceLocator::get()]] with an invalid ID, an exception will be thrown.
+[[yii\di\ServiceLocator::has()]] を使って、コンポーネントIDがすれに登録されているかをチェックできます。
+無効なIDで [[yii\di\ServiceLocator::get()]] を呼び出した場合、例外がスローされます。
 
-
-Because service locators are often being created with [configurations](concept-configurations.md),
-a writable property named [[yii\di\ServiceLocator::setComponents()|components]] is provided. This allows you to configure and register multiple components at once. The following code shows a configuration array
-that can be used to configure an application, while also registering the "db", "cache" and "search" components:
+サービスロケータは多くの場合、 [構成情報](concept-configurations.md) で作成されるため、
+[[yii\di\ServiceLocator::setComponents()|components]] という名前の書き込み可能プロパティが提供されています。
+これで一度に複数のコンポーネントを設定して登録することができます。次のコードはアプリケーションを構成する構成情報配列を示しており、
+"db" と "cache" と "search" コンポーネントの登録もしています:
 
 ```php
 return [
@@ -81,3 +80,4 @@ return [
     ],
 ];
 ```
+
