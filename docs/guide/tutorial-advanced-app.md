@@ -12,20 +12,20 @@ The following table compares the difference between the advanced and the basic a
 
 | Feature  |  Basic  |  Advanced |
 |---|:---:|:---:|
-| Project structure |  ?  |  ?  |
-| Site controller |  ?  |  ?  |
-| User login/out |   ?  |  ?  |
-| Form models  |   ?  |  ?  |
-| DB connection  |   ?  |  ?  |
-| Console command  |   ?  |  ?  |
-| Asset bundle  |   ?  |  ?  |
-| Codeception tests  |   ?  |  ?  |
-| Front- and back-end apps  |    |  ?  |
-| Active record models  |     |  ?  |
-| User registration  |     |  ?  |
-| Email  |  ?   |  ?  |
-| Twitter Bootstrap  |  ?   |  ?  |
-| etc...  |     |  ?  |
+| Project structure |  ✓  |  ✓  |
+| Site controller |  ✓  |  ✓  |
+| User login/out |   ✓  |  ✓  |
+| Form models  |   ✓  |  ✓  |
+| DB connection  |   ✓  |  ✓  |
+| Console command  |   ✓  |  ✓  |
+| Asset bundle  |   ✓  |  ✓  |
+| Codeception tests  |   ✓  |  ✓  |
+| Front- and back-end apps  |    |  ✓  |
+| Active record models  |     |  ✓  |
+| User registration  |     |  ✓  |
+| Email  |  ✓   |  ✓  |
+| Twitter Bootstrap  |  ✓   |  ✓  |
+| etc...  |     |  ✓  |
 
 
 
