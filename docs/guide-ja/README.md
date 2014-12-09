@@ -87,9 +87,9 @@ All Rights Reserved.
 ユーザからのデータ取得
 ----------------------
 
-* **翻訳未着手** [フォームを作成する](input-forms.md)
-* **翻訳未着手** [入力を検証する](input-validation.md)
-* **翻訳未着手** [ファイルをアップロードする](input-file-upload.md)
+* **翻訳中** [フォームを作成する](input-forms.md)
+* **翻訳中** [入力を検証する](input-validation.md)
+* **翻訳中** [ファイルをアップロードする](input-file-upload.md)
 * **TBD** [複数モデルのためのデータ取得](input-multiple-models.md)
 
 
@@ -184,8 +184,8 @@ RESTful ウェブサービス
 * Menu: **TBD** link to demo page
 * LinkPager: **TBD** link to demo page
 * LinkSorter: **TBD** link to demo page
-* [Bootstrap ウィジェット](widget-bootstrap.md)
-* [Jquery UI ウィジェット](widget-jui.md)
+* **翻訳未着手** [Bootstrap ウィジェット](widget-bootstrap.md)
+* **翻訳未着手** [Jquery UI ウィジェット](widget-jui.md)
 
 
 ヘルパ
