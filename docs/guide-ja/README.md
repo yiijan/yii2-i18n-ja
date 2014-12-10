@@ -87,7 +87,7 @@ All Rights Reserved.
 ユーザからのデータ取得
 ----------------------
 
-* **翻訳中** [フォームを作成する](input-forms.md)
+* [フォームを作成する](input-forms.md)
 * **翻訳中** [入力を検証する](input-validation.md)
 * **翻訳中** [ファイルをアップロードする](input-file-upload.md)
 * **TBD** [複数モデルのためのデータ取得](input-multiple-models.md)
