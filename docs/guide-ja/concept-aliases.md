@@ -34,7 +34,7 @@ Yii::setAlias('@foobar', '@foo/bar');
 ルートエイリアスは通常、 [ブートストラップ](runtime-bootstrapping.md) 段階で定義されます。
 たとえば、[エントリスクリプト](structure-entry-scripts.md) で [[Yii::setAlias()]] を呼び出すことができます。
 便宜上、 [アプリケーション](structure-applications.md) は、`aliases` という名前の書き込み可能なプロパティを提供しており、
-それをアプリケーション [コンフィギュレーション](concept-configurations.md) で設定することが可能です。
+それをアプリケーションの [構成情報](concept-configurations.md) で設定することが可能です。
 
 ```php
 return [

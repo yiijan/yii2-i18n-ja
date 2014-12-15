@@ -59,8 +59,8 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 });
 ```
 
-また、 [コンフィギュレーション](concept-configurations.md) を通じてイベントハンドラを添付することもできます。詳細については
-[コンフィギュレーション](concept-configurations.md) の章を参照してください。
+また、 [構成情報](concept-configurations.md) を通じてイベントハンドラをアタッチすることもできます。詳細については
+[構成情報](concept-configurations.md) の章を参照してください。
 
 イベントハンドラを付与するとき、 [[yii\base\Component::on()]] の3番目のパラメータとして、付加的なデータを提供することができます。
 そのデータは、イベントがトリガされてハンドラが呼び出されるときに、ハンドラ内で利用きます。たとえば:
