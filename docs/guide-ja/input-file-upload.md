@@ -1,15 +1,15 @@
-Uploading Files
-===============
+ファイルをアップロードする
+==========================
 
-Uploading files in Yii is done via the a form model, its validation rules and some controller code. Let's review what's
-required to handle uploads properly.
+Yii におけるファイルのアップロードは、フォームモデル、その検証規則、そして、いくらかのコントローラコードによって行われます。
+アップロードを適切に処理するために何が必要とされるのか、見ていきましよう。
 
 
-Uploading single file
----------------------
+一つのファイルをアップロードする
+--------------------------------
 
-First of all, you need to create a model that will handle file uploads. Create `models/UploadForm.php` with the following
-content:
+まず最初に、ファイルのアップロードを処理するモデルを作成する必要があります。
+次の内容を持つ `models/UploadForm.php` を作って作成してください。
 
 ```php
 namespace app\models;
@@ -18,17 +18,17 @@ use yii\base\Model;
 use yii\web\UploadedFile;
 
 /**
- * UploadForm is the model behind the upload form.
+ * UploadForm がアップロードのフォームの背後にあるモデルである。
  */
 class UploadForm extends Model
 {
     /**
-     * @var UploadedFile file attribute
+     * @var UploadedFile file 属性
      */
     public $file;
 
     /**
-     * @return array the validation rules.
+     * @return array 検証規則
      */
     public function rules()
     {
@@ -39,12 +39,12 @@ class UploadForm extends Model
 }
 ```
 
-In the code above, we've created a model `UploadForm` with an attribute `$file` that will become `<input type="file">` in
-the HTML form. The attribute has the validation rule named `file` that uses [[yii\validators\FileValidator|FileValidator]].
+上記のコードにおいて作成した `UploadForm` というモデルは、HTML フォームで `<input type="file">` となる `$file` という属性を持ちます。
+この属性は [[yii\validators\FileValidator|FileValidator]] を使用する `file` という検証規則を持ちます。
 
-### Form view
+### フォームのビュー
 
-Next, create a view that will render the form:
+次に、フォームを表示するビューを作成します。
 
 ```php
 <?php
@@ -55,17 +55,17 @@ use yii\widgets\ActiveForm;
 
 <?= $form->field($model, 'file')->fileInput() ?>
 
-<button>Submit</button>
+<button>送信</button>
 
 <?php ActiveForm::end() ?>
 ```
 
-The `'enctype' => 'multipart/form-data'` is necessary because it allows file uploads. `fileInput()` represents a form
-input field.
+ファイルのアップロードを可能にする `'enctype' => 'multipart/form-data'` は不可欠です。
+`fileInput()` がフォームの入力フィールドを表します。
 
-### Controller
+### コントローラ
 
-Now create the controller that connects the form and model together:
+そして、フォームとモデルを結び付けるコントローラを作成します。
 
 ```php
 namespace app\controllers;
@@ -94,25 +94,29 @@ class SiteController extends Controller
 }
 ```
 
-Instead of `model->load(...)`, we are using `UploadedFile::getInstance(...)`. [[\yii\web\UploadedFile|UploadedFile]] 
-does not run the model validation, rather it only provides information about the uploaded file. Therefore, you need to run the validation manually via `$model->validate()` to trigger the [[yii\validators\FileValidator|FileValidator]] that expects a file:
+`model->load(...)` の代りに `UploadedFile::getInstance(...)` を使っています。
+[[\yii\web\UploadedFile|UploadedFile]] はモデルの検証を実行せず、アップロードされたファイルに関する情報を提供するだけです。
+そのため、`$model->validate()` を手作業で実行して、[[yii\validators\FileValidator|FileValidator]] を起動する必要があります。
+[[yii\validators\FileValidator|FileValidator]] は、下記のコアコードが示しているように、属性がファイルであることを要求します。
 
 ```php
-$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE //in the code framework
+if (!$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE) {
+    return [$this->uploadRequired, []];  // "ファイルをアップロードしてください。" というエラーメッセージ
+}
 ```
 
-If validation is successful, then we're saving the file: 
+検証が成功したら、ファイルを保存します。
 
 ```php
 $model->file->saveAs('uploads/' . $model->file->baseName . '.' . $model->file->extension);
 ```
 
-If you're using the "basic" application template, then folder `uploads` should be created under `web`.
+「ベーシック」アプリケーションテンプレートを使っている場合は、`uploads` フォルダを `web` の下に作成しなければなりません。
 
-That's it. Load the page and try uploading. Uploads should end up in `basic/web/uploads`.
+以上です。ページをロードして、アップロードを試して見てください。ファイルは `basic/web/uploads` にアップロードされます。
 
-Validation
-----------
+検証
+----
 
 It's often required to adjust validation rules to accept certain files only or require uploading. Below we'll review
 some common rule configurations.
