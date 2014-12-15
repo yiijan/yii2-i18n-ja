@@ -103,8 +103,8 @@ function ($event) {
 [[yii\base\Component|component]] へのビヘイビアのアタッチは、静的にも動的にも可能です。実際は、前者のほうがより一般的ですが。
 
 ビヘイビアを静的にアタッチするには、ビヘイビアをアタッチしたいコンポーネントクラスの [[yii\base\Component::behaviors()|behaviors()]] メソッドをオーバーライドします。
-[[yii\base\Component::behaviors()|behaviors()]] メソッドは、ビヘイビアの [コンフィギュレーション](concept-configurations.md) のリストを返さなければなりません。
-各ビヘイビアのコンフィギュレーションは、ビヘイビアのクラス名でも、コンフィギュレーション配列でもかまいません。
+[[yii\base\Component::behaviors()|behaviors()]] メソッドは、ビヘイビアの [構成](concept-configurations.md) のリストを返さなければなりません。
+各ビヘイビアの構成内容は、ビヘイビアのクラス名でも、構成情報配列でもかまいません。
 
 ```php
 namespace app\models;
@@ -123,14 +123,14 @@ class User extends ActiveRecord
             // 名前付きビヘイビア ビヘイビアクラス名のみ
             'myBehavior2' => MyBehavior::className(),
 
-            // 無名ビヘイビア コンフィギュレーション配列
+            // 無名ビヘイビア 構成情報配列
             [
                 'class' => MyBehavior::className(),
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ],
 
-            // 名前付きビヘイビア コンフィギュレーション配列
+            // 名前付きビヘイビア 構成情報配列
             'myBehavior4' => [
                 'class' => MyBehavior::className(),
                 'prop1' => 'value1',
@@ -156,7 +156,7 @@ $component->attachBehavior('myBehavior1', new MyBehavior);
 // ビヘイビアクラスをアタッチ
 $component->attachBehavior('myBehavior2', MyBehavior::className());
 
-// コンフィギュレーション配列をアタッチ
+// 構成情報配列をアタッチ
 $component->attachBehavior('myBehavior3', [
     'class' => MyBehavior::className(),
     'prop1' => 'value1',
@@ -172,7 +172,7 @@ $component->attachBehaviors([
 ]);
 ```
 
-次のように、 [コンフィギュレーション](concept-configurations.md) を通じてビヘイビアをアタッチすることもできます:
+次のように、 [構成情報](concept-configurations.md) を通じてビヘイビアをアタッチすることもできます:
 
 ```php
 [
@@ -186,7 +186,7 @@ $component->attachBehaviors([
 ]
 ```
 
-詳しくは [コンフィギュレーション](concept-configurations.md#configuration-format) セクションを参照してください。
+詳しくは [構成情報](concept-configurations.md#configuration-format) セクションを参照してください。
 
 ビヘイビアの使用 <a name="using-behaviors"></a>
 ---------------
@@ -278,7 +278,7 @@ class User extends ActiveRecord
 }
 ```
 
-上のビヘイビアコンフィギュレーションは、レコードが:
+上のビヘイビア構成は、レコードが:
 
 * 挿入されるとき、ビヘイビアは現在のタイムスタンプを `created_at` と `updated_at` 属性に割り当てます
 * 更新されるとき、ビヘイビアは現在のタイムスタンプを `updated_at` 属性に割り当てます
@@ -315,12 +315,12 @@ $user->touch('login_time');
 
 ビヘイビアは、コンポーネントクラスの変更を必要とせずに、動的なコンポーネントへのアタッチとデタッチが可能です。トレイトを使用するには、クラスをトレイトを使って書き換える必要があります。
 
-ビヘイビアはコンフィグ可能ですがトレイトは不可能です。
+ビヘイビアは構成可能ですがトレイトは不可能です。
 
 ビヘイビアは、イベントに応答することで、コンポーネントのコード実行をカスタマイズできます。
 
-同じコンポーネントにアタッチされた異なるビヘイビア間で名前の競合がある場合、その競合は、
-先にコンポーネントにアタッチされたものを優先することによって、自動的に解消されます。
+同じコンポーネントにアタッチされた異なるビヘイビア間で名前の競合がある場合、その競合は自動的に、
+先にコンポーネントにアタッチされたものを優先することで解消されます。
 別のトレイトが起こした名前競合の場合、影響を受けるプロパティやメソッドの名前変更による、手動での解決が必要です。
 
 
@@ -328,5 +328,5 @@ $user->touch('login_time');
 
 ビヘイビアは時間もメモリも食うオブジェクトなので、トレイトはビヘイビアよりはるかに効率的です。
 
-トレイトは言語構造であるため、IDEとの相性に優れています。
+トレイトは言語構造であるため、IDE との相性に優れています。
 

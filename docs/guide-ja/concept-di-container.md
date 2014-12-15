@@ -1,28 +1,27 @@
-Dependency Injection Container
+依存性注入コンテナ
 ==============================
 
-A dependency injection (DI) container is an object that knows how to instantiate and configure objects and
-all their dependent objects. [Martin's article](http://martinfowler.com/articles/injection.html) has well
-explained why DI container is useful. Here we will mainly explain the usage of the DI container provided by Yii.
+依存性注入 (DI) コンテナは、オブジェクトとそのすべての依存オブジェクトを、インスタンス化し、設定する方法を知っているオブジェクトです。
+なぜ DI コンテナが便利なのかは、[Martin の記事](http://martinfowler.com/articles/injection.html) の説明がわかりやすいでしょう。
+ここでは、主に Yii の提供する DI コンテナの使用方法を説明します。
 
 
-Dependency Injection <a name="dependency-injection"></a>
+依存性注入 <a name="dependency-injection"></a>
 --------------------
 
-Yii provides the DI container feature through the class [[yii\di\Container]]. It supports the following kinds of
-dependency injection:
+Yii は [[yii\di\Container]] クラスを通して DI コンテナの機能を提供します。これは、次の種類の依存性注入をサポートしています:
 
-* Constructor injection;
-* Setter and property injection;
-* PHP callable injection.
+* コンストラクタ·インジェクション
+* セッター/プロパティ·インジェクション
+* PHP コーラブル·インジェクション
 
 
-### Constructor Injection <a name="constructor-injection"></a>
+### コンストラクタ·インジェクション <a name="constructor-injection"></a>
 
-The DI container supports constructor injection with the help of type hints for constructor parameters.
-The type hints tell the container which classes or interfaces are dependent when it is used to create a new object.
-The container will try to get the instances of the dependent classes or interfaces and then inject them
-into the new object through the constructor. For example,
+DI コンテナは、コンストラクタパラメータの型ヒントの助けを借りた、コンストラクタ·インジェクションをサポートしています。
+型ヒントは、クラスやインタフェースが新しいオブジェクトの作成で使用されるさい、どれが依存であるのかということをコンテナに教えます。
+コンテナは、依存クラスやインタフェースのインスタンスを取得し、コンストラクタを通して、新しいオブジェクトにそれらの注入を試みます。
+たとえば
 
 ```php
 class Foo
@@ -33,18 +32,17 @@ class Foo
 }
 
 $foo = $container->get('Foo');
-// which is equivalent to the following:
+// これは下記と等価:
 $bar = new Bar;
 $foo = new Foo($bar);
 ```
 
 
-### Setter and Property Injection <a name="setter-and-property-injection"></a>
+### セッター/プロパティ·インジェクション <a name="setter-and-property-injection"></a>
 
-Setter and property injection is supported through [configurations](concept-configurations.md).
-When registering a dependency or when creating a new object, you can provide a configuration which
-will be used by the container to inject the dependencies through the corresponding setters or properties.
-For example,
+セッター/プロパティ·インジェクションは、[構成情報](concept-configurations.md) を通してサポートされます。
+依存関係を登録するときや、新しいオブジェクトを作成するとき、コンテナが使用する構成情報を提供することができ、
+それに対応するセッターまたはプロパティを通じて依存関係が注入されます。たとえば
 
 ```php
 use yii\base\Object;
@@ -73,11 +71,10 @@ $container->get('Foo', [], [
 ```
 
 
-### PHP Callable Injection <a name="php-callable-injection"></a>
+### PHP コーラブル・インジェクション <a name="php-callable-injection"></a>
 
-In this case, the container will use a registered PHP callable to build new instances of a class.
-The callable is responsible to resolve the dependencies and inject them appropriately to the newly
-created objects. For example,
+この場合、コンテナは、登録された PHP のコーラブルオブジェクトを使用し、クラスの新しいインスタンスを構築します。
+コーラブルは、依存関係を解決し、新しく作成されたオブジェクトに適切にそれらを注入する責任があります。たとえば
 
 ```php
 $container->set('Foo', function () {
@@ -88,30 +85,27 @@ $foo = $container->get('Foo');
 ```
 
 
-Registering Dependencies <a name="registering-dependencies"></a>
+依存関係の登録 <a name="registering-dependencies"></a>
 ------------------------
 
-You can use [[yii\di\Container::set()]] to register dependencies. The registration requires a dependency name
-as well as a dependency definition. A dependency name can be a class name, an interface name, or an alias name;
-and a dependency definition can be a class name, a configuration array, or a PHP callable.
+あなたは、[[yii\di\Container::set()]] 使って依存関係を登録することができます。登録には依存関係の名前だけでなく、
+依存関係の定義が必要です。依存関係の名前は、クラス名、インタフェース名、エイリアス名を指定することができます。
+依存関係の定義には、クラス名、構成情報配列、PHPのコーラブルを指定できます。
 
 ```php
 $container = new \yii\di\Container;
 
-// register a class name as is. This can be skipped.
+// クラス名そのまま。これはなくてもかまいません。
 $container->set('yii\db\Connection');
 
-// register an interface
-// When a class depends on the interface, the corresponding class
-// will be instantiated as the dependent object
+// インターフェースの登録
+// クラスがインターフェースに依存する場合、対応するクラスが依存オブジェクトとしてインスタンス化されます
 $container->set('yii\mail\MailInterface', 'yii\swiftmailer\Mailer');
 
-// register an alias name. You can use $container->get('foo')
-// to create an instance of Connection
+// エイリアス名の登録。$container->get('foo') を使って Connection のインスタンスを作成できます
 $container->set('foo', 'yii\db\Connection');
 
-// register a class with configuration. The configuration
-// will be applied when the class is instantiated by get()
+// 構成情報をともなうクラスの登録。クラスが get() でインスタンス化されるとき構成情報が適用されます
 $container->set('yii\db\Connection', [
     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
     'username' => 'root',
@@ -119,8 +113,8 @@ $container->set('yii\db\Connection', [
     'charset' => 'utf8',
 ]);
 
-// register an alias name with class configuration
-// In this case, a "class" element is required to specify the class
+// クラスの構成情報をともなうエイリアス名の登録
+// この場合、クラスを指定する "class" 要素が必要です
 $container->set('db', [
     'class' => 'yii\db\Connection',
     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
@@ -129,23 +123,21 @@ $container->set('db', [
     'charset' => 'utf8',
 ]);
 
-// register a PHP callable
-// The callable will be executed each time when $container->get('db') is called
+// PHP コーラブルの登録
+// このコーラブルは $container->get('db') が呼ばれるたびに実行されます
 $container->set('db', function ($container, $params, $config) {
     return new \yii\db\Connection($config);
 });
 
-// register a component instance
-// $container->get('pageCache') will return the same instance each time it is called
+// コンポーネントインスタンスの登録
+// $container->get('pageCache') は呼ばれるたびに毎回同じインスタンスを返します
 $container->set('pageCache', new FileCache);
 ```
 
-> Tip: If a dependency name is the same as the corresponding dependency definition, you do not
-  need to register it with the DI container.
+> 補足: 依存関係名が、対応する依存関係の定義と同じである場合は、それを DI コンテナに登録する必要はありません。
 
-A dependency registered via `set()` will generate an instance each time the dependency is needed.
-You can use [[yii\di\Container::setSingleton()]] to register a dependency that only generates
-a single instance:
+`set()` を介して登録された依存性は、依存性が必要とされるたびにインスタンスを生成します。
+[[yii\di\Container::setSingleton()]] を使うと、単一のインスタンスをひとつだけ生成する依存関係を登録することができます:
 
 ```php
 $container->setSingleton('yii\db\Connection', [
@@ -157,37 +149,38 @@ $container->setSingleton('yii\db\Connection', [
 ```
 
 
-Resolving Dependencies <a name="resolving-dependencies"></a>
+依存関係の解決 <a name="resolving-dependencies"></a>
 ----------------------
 
-Once you have registered dependencies, you can use the DI container to create new objects,
-and the container will automatically resolve dependencies by instantiating them and injecting
-them into the newly created objects. The dependency resolution is recursive, meaning that
-if a dependency has other dependencies, those dependencies will also be resolved automatically.
+依存関係を登録すると、新しいオブジェクトを作成するのに DI コンテナを使用することができ、
+コンテナが自動的に、依存性をインスタンス化して新しく作成されたオブジェクトに注入することで、
+依存関係を解決します。依存関係の解決は再帰的、つまり、ある依存性が他の依存関係を持っている場合、
+それらの依存関係も自動的に解決されます。
 
-You can use [[yii\di\Container::get()]] to create new objects. The method takes a dependency name,
-which can be a class name, an interface name or an alias name. The dependency name may or may
-not be registered via `set()` or `setSingleton()`. You may optionally provide a list of class
-constructor parameters and a [configuration](concept-configurations.md) to configure the newly created object.
-For example,
+[[yii\di\Container::get()]] を使って、新しいオブジェクトを作成することができます。
+このメソッドは、クラス名、インタフェース名、エイリアス名で指定できる依存関係の名前を受け取ります。
+依存関係名は、 `set()` や `setSingleton()` を介して登録されていたりされていなかったりする
+可能性があります。オプションで、クラスのコンストラクタのパラメータのリストや、新しく作成された
+オブジェクトを設定するための [設定情報](concept-configurations.md) を渡すことができます。
+たとえば
 
 ```php
-// "db" is a previously registered alias name
+// "db" は事前に登録されたエイリアス名
 $db = $container->get('db');
 
-// equivalent to: $engine = new \app\components\SearchEngine($apiKey, ['type' => 1]);
+// これと同じ意味: $engine = new \app\components\SearchEngine($apiKey, ['type' => 1]);
 $engine = $container->get('app\components\SearchEngine', [$apiKey], ['type' => 1]);
 ```
 
-Behind the scene, the DI container does much more work than just creating a new object.
-The container will first inspect the class constructor to find out dependent class or interface names
-and then automatically resolve those dependencies recursively.
+見えないところで、DIコンテナは、単に新しいオブジェクトを作成するよりもはるかに多くの作業を行います。
+コンテナは、最初の依存クラスまたはインタフェースの名前を見つけるために、クラスのコンストラクタを検査し、
+自動的にそれらの依存関係を再帰で解決します。
 
-The following code shows a more sophisticated example. The `UserLister` class depends on an object implementing
-the `UserFinderInterface` interface; the `UserFinder` class implements this interface and depends on
-a `Connection` object. All these dependencies are declared through type hinting of the class constructor parameters.
-With property dependency registration, the DI container is able to resolve these dependencies automatically
-and creates a new `UserLister` instance with a simple call of `get('userLister')`.
+次のコードでより洗練された例を示します。 `UserLister` クラスは `UserFinderInterface`
+インタフェースを実装するオブジェクトに依存します。 `UserFinder` クラスはこのインターフェイスを実装していて、かつ、
+`Connection` オブジェクトに依存します。これらのすべての依存関係は、クラスのコンストラクタのパラメータのタイプヒンティングで宣言されています。
+プロパティ依存性の登録をすれば、DI コンテナは自動的にこれらの依存関係を解決し、単純に `get('userLister')`
+を呼び出すだけで新しい `UserLister` インスタンスを作成できます。
 
 ```php
 namespace app\models;
@@ -238,7 +231,7 @@ $container->set('userLister', 'app\models\UserLister');
 
 $lister = $container->get('userLister');
 
-// which is equivalent to:
+// と、いうのはこれと同じ:
 
 $db = new \yii\db\Connection(['dsn' => '...']);
 $finder = new UserFinder($db);
@@ -246,38 +239,38 @@ $lister = new UserLister($finder);
 ```
 
 
-Practical Usage <a name="practical-usage"></a>
+実際の使いかた <a name="practical-usage"></a>
 ---------------
 
-Yii creates a DI container when you include the `Yii.php` file in the [entry script](structure-entry-scripts.md)
-of your application. The DI container is accessible via [[Yii::$container]]. When you call [[Yii::createObject()]],
-the method will actually call the container's [[yii\di\Container::get()|get()]] method to create a new object.
-As aforementioned, the DI container will automatically resolve the dependencies (if any) and inject them
-into the newly created object. Because Yii uses [[Yii::createObject()]] in most of its core code to create
-new objects, this means you can customize the objects globally by dealing with [[Yii::$container]].
+あなたのアプリケーションの [エントリスクリプト](structure-entry-scripts.md) で `Yii.php` ファイルをインクルードするとき、
+Yii は DI コンテナを作成します。この DI コンテナは [[Yii::$container]] を介してアクセス可能です。 [[Yii::createObject()]] を呼び出したとき、
+このメソッドは実際には、新しいオブジェクトを作成ために、コンテナの [[yii\di\Container::get()|get()]] メソッドを呼び出しています。
+前述のとおり、DI コンテナは(もしあれば)自動的に依存関係を解決し、新しく作成されたオブジェクトにそれらを注入します。
+Yii は、新しいオブジェクトを作成するさいそのコアコードのほとんどで [[Yii::createObject()]] を使用しているため、これは、
+[[Yii::$container]] を扱えばグローバルにオブジェクトをカスタマイズすることができることを意味しています。
 
-For example, you can customize globally the default number of pagination buttons of [[yii\widgets\LinkPager]]:
+たとえば、 [[yii\widgets\LinkPager]] のページネーションボタンのデフォルト個数をグローバルにカスタマイズすることができます:
 
 ```php
 \Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
 ```
 
-Now if you use the widget in a view with the following code, the `maxButtonCount` property will be initialized
-as 5 instead of the default value 10 as defined in the class.
+次のコードでビューでウィジェットを使用すれば、 `maxButtonCount` プロパティは、
+クラスで定義されているデフォルト値 10 の代わりに 5 で初期化されます。
 
 ```php
 echo \yii\widgets\LinkPager::widget();
 ```
 
-You can still override the value set via DI container, though:
+DIコンテナを経由して設定された値は、こうやって、まだまだ上書きすることができます:
 
 ```php
 echo \yii\widgets\LinkPager::widget(['maxButtonCount' => 20]);
 ```
 
-Another example is to take advantage of the automatic constructor injection of the DI container.
-Assume your controller class depends on some other objects, such as a hotel booking service. You
-can declare the dependency through a constructor parameter and let the DI container to resolve it for you.
+DI コンテナの自動コンストラクタ・インジェクションの利点を活かす別の例です。
+あなたのコントローラクラスが、ホテル予約サービスのような、いくつかの他のオブジェクトに依存するとします。
+あなたは、コンストラクタパラメータを通して依存関係を宣言して、DI コンテナにあなたの課題を解決させることができます。
 
 ```php
 namespace app\controllers;
@@ -297,38 +290,37 @@ class HotelController extends Controller
 }
 ```
 
-If you access this controller from browser, you will see an error complaining the `BookingInterface`
-cannot be instantiated. This is because you need to tell the DI container how to deal with this dependency:
+あなたがブラウザからこのコントローラにアクセスすると、 `BookingInterface` をインスタンス化できませんという
+不具合報告エラーが表示されるでしょう。これは、この依存関係に対処する方法を DI コンテナに教える必要があるからです:
 
 ```php
 \Yii::$container->set('app\components\BookingInterface', 'app\components\BookingService');
 ```
 
-Now if you access the controller again, an instance of `app\components\BookingService` will be
-created and injected as the 3rd parameter to the controller's constructor.
+これで、あなたが再びコントローラにアクセスするときは、 `app\components\BookingService`
+のインスタンスが作成され、コントローラのコンストラクタに3番目のパラメータとして注入されるようになります。
 
 
-When to Register Dependencies <a name="when-to-register-dependencies"></a>
+依存関係を登録するときに <a name="when-to-register-dependencies"></a>
 -----------------------------
 
-Because dependencies are needed when new objects are being created, their registration should be done
-as early as possible. The followings are the recommended practices:
+依存関係は、新しいオブジェクトが作成されるとき必要とされるので、それらの登録は可能な限り早期に行われるべきです。
+推奨プラクティス以下のとおりです:
 
-* If you are the developer of an application, you can register dependencies in your
-  application's [entry script](structure-entry-scripts.md) or in a script that is included by the entry script.
-* If you are the developer of a redistributable [extension](structure-extensions.md), you can register dependencies
-  in the bootstrapping class of the extension.
+* あなたがアプリケーションの開発者である場合、アプリケーションの [エントリスクリプト](structure-entry-scripts.md) 内、
+  またはエントリスクリプトにインクルードされるスクリプト内で、依存関係を登録することができます。
+* あなたが再配布可能な [エクステンション](structure-extensions.md) の開発者である場合は、エクステンションのブートストラップクラス内で
+  依存関係を登録することができます。
 
 
-Summary <a name="summary"></a>
+まとめ <a name="summary"></a>
 -------
 
-Both dependency injection and [service locator](concept-service-locator.md) are popular design patterns
-that allow building software in a loosely-coupled and more testable fashion. We highly recommend you to read
-[Martin's article](http://martinfowler.com/articles/injection.html) to get a deeper understanding of
-dependency injection and service locator.
+依存性注入と [サービスロケータ](concept-service-locator.md) はともに、疎結合でよりテストしやすい方法でのソフトウェア構築を可能にする、
+定番のデザインパターンです。依存性注入とサービスロケータへのより深い理解を得るために、 [Martin の記事](http://martinfowler.com/articles/injection.html)
+を読むことを強くお勧めします。
 
-Yii implements its [service locator](concept-service-locator.md) on top of the dependency injection (DI) container.
-When a service locator is trying to create a new object instance, it will forward the call to the DI container.
-The latter will resolve the dependencies automatically as described above.
+Yiiはその [サービスロケータ](concept-service-locator.md) を、依存性注入(DI)コンテナの上に実装しています。
+サービスロケータは、新しいオブジェクトのインスタンスを作成しようとしたとき、DI コンテナに呼び出しを転送します。
+後者は、依存関係を、上で説明したように自動的に解決します。
 

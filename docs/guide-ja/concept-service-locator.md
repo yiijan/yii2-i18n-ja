@@ -43,7 +43,7 @@ $locator->set('search', function () {
 $locator->set('pageCache', new FileCache);
 ```
 
-いったんコンポーネントが登録されたら、次の2つの方法のいずれかで、そのIDを使ってそれにアクセスすることができます:
+いったんコンポーネントが登録されたら、次の 2 つの方法のいずれかで、その ID を使ってそれにアクセスすることができます:
 
 ```php
 $cache = $locator->get('cache');
@@ -51,11 +51,11 @@ $cache = $locator->get('cache');
 $cache = $locator->cache;
 ```
 
-以上のように、 [[yii\di\ServiceLocator]] はコンポーネントIDを使用したプロパティのように、コンポーネントにアクセスすることができます。
+以上のように、 [[yii\di\ServiceLocator]] はコンポーネント ID を使用したプロパティのように、コンポーネントにアクセスすることができます。
 あなたが最初にコンポーネントにアクセスしたとき、 [[yii\di\ServiceLocator]] はコンポーネントの登録情報を使用してコンポーネントの新しいインスタンスを作成し、
 それを返します。後でそのコンポーネントが再度アクセスされた場合、サービスロケータは同じインスタンスを返します。
 
-[[yii\di\ServiceLocator::has()]] を使って、コンポーネントIDがすれに登録されているかをチェックできます。
+[[yii\di\ServiceLocator::has()]] を使って、コンポーネント ID がすでに登録されているかをチェックできます。
 無効なIDで [[yii\di\ServiceLocator::get()]] を呼び出した場合、例外がスローされます。
 
 サービスロケータは多くの場合、 [構成情報](concept-configurations.md) で作成されるため、
