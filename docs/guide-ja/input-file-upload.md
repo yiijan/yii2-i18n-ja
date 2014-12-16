@@ -118,12 +118,12 @@ $model->file->saveAs('uploads/' . $model->file->baseName . '.' . $model->file->e
 検証
 ----
 
-It's often required to adjust validation rules to accept certain files only or require uploading. Below we'll review
-some common rule configurations.
+たいていの場合、検証規則を調整して、特定のファイルだけを受け取るようにしたり、アップロードを必須としたりする必要があります。
+下記で、よく使われる規則の構成を見てみましよう。
 
 ### Required
 
-If you need to make the file upload mandatory, use `skipOnEmpty` like the following:
+ファイルのアップロードを必須とする必要がある場合は、次のように `skipOnEmpty` を `false` に設定します。
 
 ```php
 public function rules()
@@ -134,9 +134,10 @@ public function rules()
 }
 ```
 
-### MIME type
+### MIME タイプ
 
-It is wise to validate the type of file uploaded. FileValidator has the property `$extensions` for this purpose:
+アップロードされるファイルのタイプを検証することは賢明なことです。
+`FileValidator` はこの目的のための `extensions` プロパティを持っています。
 
 ```php
 public function rules()
@@ -147,7 +148,8 @@ public function rules()
 }
 ```
 
-Keep in mind that only the file extension will be validated, but not the actual file content. In order to validate the content as well, use the `mimeTypes` property of `FileValidator`:
+ただし、ファイル拡張子が検証されるだけで、実際のファイルの中身は検証されないことを憶えておいてください。
+ファイルの中身も検証するためには、`FileValidator` の `mimeType` プロパティを使います。
 
 ```php
 public function rules()
@@ -158,41 +160,42 @@ public function rules()
 }
 ```
 
-[List of common media types](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types)
+[一般的なメディアタイプの一覧表](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types)
 
-### Image properties
+### 画像のプロパティ
 
-If you upload an image, [[yii\validators\ImageValidator|ImageValidator]] may come in handy. It verifies if an attribute
-received a valid image that can be then either saved or processed using the [Imagine Extension](https://github.com/yiisoft/yii2/tree/master/extensions/imagine).
+画像をアップロードするときは、[[yii\validators\ImageValidator|ImageValidator]] が重宝するでしょう。
+このバリデータは、属性が有効な画像を受け取ったか否かを検証します。
+その画像は、[Imagine エクステンション](https://github.com/yiisoft/yii2/tree/master/extensions/imagine) によって、保存するか、または、処理することが出来ます。
 
-Uploading multiple files
-------------------------
+複数のファイルをアップロードする
+--------------------------------
 
-If you need to upload multiple files at once, some adjustments are required.
+複数のファイルを一度にアップロードする必要がある場合は、少し修正が必要になります。
  
-Model:
+モデル:
 
 ```php
 class UploadForm extends Model
 {
     /**
-     * @var UploadedFile|Null file attribute
+     * @var UploadedFile|Null ファイル属性
      */
     public $file;
 
     /**
-     * @return array the validation rules.
+     * @return array 検証規則
      */
     public function rules()
     {
         return [
-            [['file'], 'file', 'maxFiles' => 10], // <--- here!
+            [['file'], 'file', 'maxFiles' => 10], // <--- ここ !
         ];
     }
 }
 ```
 
-View:
+ビュー:
 
 ```php
 <?php
@@ -203,18 +206,18 @@ $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]);
 
 <?= $form->field($model, 'file[]')->fileInput(['multiple' => true]) ?>
 
-    <button>Submit</button>
+    <button>送信</button>
 
 <?php ActiveForm::end(); ?>
 ```
 
-The difference is the following line:
+違いがあるのは、次の行です。
 
 ```php
 <?= $form->field($model, 'file[]')->fileInput(['multiple' => true]) ?>
 ```
 
-Controller:
+コントローラ:
 
 ```php
 namespace app\controllers;
@@ -245,6 +248,7 @@ class SiteController extends Controller
 }
 ```
 
-There are two differences from single file upload. First is that `UploadedFile::getInstances($model, 'file');` used
-instead of `UploadedFile::getInstance($model, 'file');`. The former returns instances for **all** uploaded files while
-the latter gives you only a single instance. The second difference is that we're doing `foreach` and saving each file.
+単一のファイルのアップロードとは、二つの点で異なります。
+最初の違いは、`UploadedFile::getInstance($model, 'file');` の代りに `UploadedFile::getInstances($model, 'file');` が使用されることです。
+前者が一つのインスタンスを返すだけなのに対して、後者はアップロードされた **全ての** ファイルのインスタンスを返します。
+第二の違いは、`foreach` によって、全てのファイルをそれぞれ保存している点です。
