@@ -9,11 +9,11 @@ Yii は、エラー処理を従来よりはるかに快適な経験にしてく�
 * エラーを表示するために専用の [コントローラアクション](structure-controllers.md#actions) を使うことがサポートされています。
 * さまざまなエラーレスポンス形式をサポートしています。
 
-[[yii\web\ErrorHandler|エラーハンドラ]] は既定で有効になっています。
+[[yii\web\ErrorHandler|エラーハンドラ]] はデフォルトで有効になっています。
 アプリケーションの [エントリスクリプト](structure-entry-scripts.md) において、定数 `YII_ENABLE_ERROR_HANDLER` を false と定義することによって、これを無効にすることが出来ます。
 
 
-## エラーハンドラを使用する <a name="using-error-handler"></a>
+## エラーハンドラを使用する <span id="using-error-handler"></span>
 
 [[yii\web\ErrorHandler|エラーハンドラ]] は `errorHandler` という名前の [アプリケーションコンポーネント](structure-application-components.md) です。
 次のように、アプリケーションの構成情報でこれをカスタマイズすることが出来ます。
@@ -56,7 +56,7 @@ throw new NotFoundHttpException();
 ```
 
 
-## エラー表示をカスタマイズする <a name="customizing-error-display"></a>
+## エラー表示をカスタマイズする <span id="customizing-error-display"></span>
 
 [[yii\web\ErrorHandler|エラーハンドラ]] は、定数 `YII_DEBUG` の値に従って、エラー表示を調整します。
 `YII_DEBUG` が true である (デバッグモードである) 場合は、エラーハンドラは、デバッグがより容易になるように、詳細なコールスタック情報とソースコード行とともに例外を表示します。
@@ -65,7 +65,7 @@ throw new NotFoundHttpException();
 > Info|情報: 例外が [[yii\base\UserException]] の子孫である場合は、`YII_DEBUG` の値の如何にかかわらず、コールスタックは表示されません。
 これは、この種の例外はユーザの誤操作によって引き起こされるものであり、開発者は何も修正する必要がないと考えられるからです。
 
-既定では、[[yii\web\ErrorHandler|エラーハンドラ]] は二つの [ビュー](structure-views.md) を使ってエラーを表示します。
+デフォルトでは、[[yii\web\ErrorHandler|エラーハンドラ]] は二つの [ビュー](structure-views.md) を使ってエラーを表示します。
 
 * `@yii/views/errorHandler/error.php`: エラーがコールスタック情報なしで表示されるべき場合に使用されます。
   `YII_DEBUG` が false の場合、これが表示される唯一のビューとなります。
@@ -74,7 +74,7 @@ throw new NotFoundHttpException();
 エラー表示をカスタマイズするために、エラーハンドラの [[yii\web\ErrorHandler::errorView|errorView]] および [[yii\web\ErrorHandler::exceptionView|exceptionView]] プロパティを構成して、自分自身のビューを使用することが出来ます。
 
 
-### エラーアクションを使う <a name="using-error-actions"></a>
+### エラーアクションを使う <span id="using-error-actions"></span>
 
 エラー表示をカスタマイズするためのもっと良い方法は、専用のエラー [アクション](structure-controllers.md) を使うことです。
 そうするためには、まず、`errorHandler` コンポーネントの [[yii\web\ErrorHandler::errorAction|errorAction]] プロパティを次のように構成します。
@@ -139,7 +139,7 @@ public function actionError()
 > Info|情報: あなたが [ベーシックアプリケーションテンプレート](start-installation.md) または [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md) を使っている場合は、エラーアクションとエラービューは、既にあなたのために定義されています。
 
 
-### エラーのレスポンス形式をカスタマイズする <a name="error-format"></a>
+### エラーのレスポンス形式をカスタマイズする <span id="error-format"></span>
 
 エラーハンドラは、[レスポンス](runtime-responses.md) の形式の設定に従ってエラーを表示します。
 [[yii\web\Response::format|レスポンス形式]] が `html` である場合は、直前の項で説明したように、エラービューまたは例外ビューを使ってエラーを表示します。
