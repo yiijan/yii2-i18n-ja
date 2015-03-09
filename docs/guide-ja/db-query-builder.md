@@ -493,7 +493,28 @@ $query1->union($query2);
   [[yii\db\Query::max()|max($q)]], [[yii\db\Query::min()|min($q)]].
   これらのメソッドでは、`$q` パラメータは必須であり、カラム名または DB 式とすることが出来る。
 
-上記のメソッドの全ては、オプションで、DB クエリの実行に使用されるべき [[yii\db\Connection|DB 接続]] を表す `$db` パラメータを取ることが出来ます。
+例えば、
+
+```php
+// SELECT `id`, `email` FROM `user`
+$rows = (new \yii\db\Query())
+    ->select(['id', 'email'])
+    ->from('user')
+    ->all();
+    
+// SELECT * FROM `user` WHERE `username` LIKE `%test%`
+$row = (new \yii\db\Query())
+    ->from('user')
+    ->where(['like', 'username', 'test'])
+    ->one();
+```
+
+> Note|注意: [[yii\db\Query::one()|one()]] メソッドはクエリ結果の最初の行だけを返します。
+  このメソッドは、生成される SQL 文に `LIMIT 1` を追加しません。
+  クエリが一つまたは数個の行しか返さないことが判っている場合 (例えば、何らかのプライマリキーによってクエリを実行している場合) は、これで構いませんし、むしろこの方が良いでしょう。
+  しかし、クエリ結果が多数のデータ行になる可能性がある場合は、パフォーマンスを向上させるために、例えば `(new \yii\db\Query())->from('user')->limit(1)->one()` のように、`limit(1)` を明示的に呼び出すべきです。
+
+これらクエリメソッドの全ては、オプションで、DB クエリの実行に使用されるべき [[yii\db\Connection|DB 接続]] を表す `$db` パラメータを取ることが出来ます。
 このパラメータを省略した場合は、DB 接続として `db` アプリケーションコンポーネントが使用されます。
 次に `count()` クエリメソッドを使う例をもう一つ挙げます。
 
