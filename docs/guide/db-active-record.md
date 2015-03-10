@@ -296,7 +296,7 @@ $customers = Customer::find()
   and you will lose most of the Active Record features. A very important distinction lies in the data type of
   the column values. When you return data in Active Record instances, column values will be automatically typecast
   according to the actual column types; on the other hand when you return data in arrays, column values will be
-  strings (since they are the result of PDO without any processing), regardless their actual column types.
+  strings (since they are the result of PDO without any processing), regardless of their actual column types.
    
 
 ### Retrieving Data in Batches <span id="data-in-batches"></span>
