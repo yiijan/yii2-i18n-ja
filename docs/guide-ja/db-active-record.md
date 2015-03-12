@@ -548,33 +548,7 @@ class Post extends \yii\db\ActiveRecord
 このような自動的なトランザクションは、`beforeSave`、`afterSave`、`beforeDelete`、`afterDelete` によってデータベースに追加の変更を加えており、本体の変更と追加の変更の両方が成功した場合にだけデータベースにコミットしたい、というときに取り分けて有用です。
 
 
-## Optimistic Locks <span id="optimistic-locks"></span>
-
-Optimistic locking is a way to prevent conflicts that may occur when a single row of data is being
-updated by multiple users. For example, both user A and user B are editing the same wiki article
-at the same time. After user A saves his edits, user B clicks on the "Save" button in an attempt to
-save his edits as well. Because user B was actually working on an outdated version of the article,
-it would be desirable to have a way to prevent him from saving the article and show him some hint message.
-
-Optimistic locking solves the above problem by using a column to record the version number of each row.
-When a row is being saved with an outdated version number, a [[yii\db\StaleObjectException]] exception
-will be thrown, which prevents the row from being saved. Optimistic locking is only supported when you
-update or delete an existing row of data using [[yii\db\ActiveRecord::update()]] or [[yii\db\ActiveRecord::delete()]],
-respectively.
-
-To use optimistic locking,
-
-1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
-   Override the `optimisticLock()` method to return the name of this column.
-2. In the Web form that collects the user input, add a hidden field that stores
-   the lock version of the record being updated.
-3. In the controller action that does the data updating, try to catch the [[\yii\db\StaleObjectException]]
-   and implement necessary business logic (e.g. merging the changes, prompting staled data)
-   to resolve the conflict.
-
-
-楽観的ロック
-------------
+## 楽観的ロック <span id="optimistic-locks"></span>
 
 楽観的ロックは、一つのデータ行が複数のユーザによって更新されるときに発生しうる衝突を回避するための方法です。
 例えば、ユーザ A と ユーザ B が 同時に同じ wiki 記事を編集しており、ユーザ A が自分の編集結果を保存した後に、ユーザ B も自分の編集結果を保存しようとして「保存」ボタンをクリックする場合を考えてください。
@@ -584,7 +558,7 @@ To use optimistic locking,
 行が古くなったバージョン番号とともに保存されようとすると、[[yii\db\StaleObjectException]] 例外が投げられて、行が保存されるのが防止されます。
 楽観的ロックは、 [[yii\db\ActiveRecord::update()]] または [[yii\db\ActiveRecord::delete()]] メソッドを使って既存の行を更新または削除しようとする場合にだけサポートされます。
 
-楽観的ロックを使用するためには、
+楽観的ロックを使用するためには、次のようにします。
 
 1. 各行のバージョン番号を保存するカラムを作成します。カラムのタイプは `BIGINT DEFAULT 0` でなければなりません。
    `optimisticLock()` メソッドをオーバーライドして、このカラムの名前を返すようにします。
