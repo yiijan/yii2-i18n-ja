@@ -33,6 +33,7 @@ Yii 2 日本語ドキュメント
 - [yii2-sphinx](https://github.com/yiijan/yii2-sphinx)
 
 そして、もう一つ、日本語翻訳全体に関わる問題を扱うための新しいレポジトリを設置します。
+日本語翻訳作業に参加したい方は、是非、下記レポジトリをご覧下さい。
 
 - [yii2-ja](https://github.com/yiijan/yii2-ja)
 
