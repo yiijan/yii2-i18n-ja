@@ -25,6 +25,7 @@ Yii 2 日本語ドキュメント
 - [yii2-elasticserch](https://github.com/yiijan/yii2-elasticserch)
 - [yii2-faker](https://github.com/yiijan/yii2-faker)
 - [yii2-gii](https://github.com/yiijan/yii2-gii)
+- [yii2-httpclient](https://github.com/yiijan/yii2-httpclient)
 - [yii2-jui](https://github.com/yiijan/yii2-jui)
 - [yii2-twig](https://github.com/yiijan/yii2-twig)
 - [yii2-mongodb](https://github.com/yiijan/yii2-mongodb)
